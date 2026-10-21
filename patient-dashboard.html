@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Foot Health — SmartSense FootGuard Pro</title>
+<style>
+  :root{
+    --bg-0:#0B1220; --bg-1:#0F172A; --panel:#1E293B; --panel-glass: rgba(30,41,59,0.55);
+    --border-glass: rgba(148,163,184,0.14); --blue:#3B82F6; --green:#22C55E; --orange:#F97316;
+    --red:#DC2626; --purple:#A855F7; --text-hi:#F1F5F9; --text-mid:#94A3B8; --text-low:#64748B;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter',system-ui,-apple-system,sans-serif; background: radial-gradient(circle at 20% 0%, #14213d, var(--bg-0) 60%);
+    color: var(--text-hi); min-height:100vh; padding:22px; }
+  .wrap{ max-width:680px; margin:0 auto; }
+  .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-icon{ width:36px; height:36px; border-radius:11px; background:linear-gradient(135deg,var(--blue),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:17px; }
+  .brand-name{ font-weight:700; font-size:15px; }
+  .brand-sub{ font-size:11px; color:var(--text-mid); }
+  select{ background:var(--panel-glass); border:1px solid var(--border-glass); color:var(--text-hi); border-radius:10px; padding:8px 12px; font-size:12.5px; }
+
+  .card{ background: var(--panel-glass); backdrop-filter: blur(16px); border:1px solid var(--border-glass); border-radius:18px; padding:20px; margin-bottom:16px; }
+  .card h3{ font-size:13px; margin:0 0 12px; color:var(--text-mid); font-weight:600; text-transform:uppercase; letter-spacing:0.03em; }
+  .card .sub{ font-size:11px; color:var(--text-low); margin:-8px 0 12px; }
+
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:560px){ .row2{ grid-template-columns:1fr; } }
+
+  .msg{ display:flex; gap:10px; padding:12px; border-radius:12px; background:rgba(15,23,42,0.4); border:1px solid var(--border-glass); margin-bottom:8px; }
+  .msg.urgent{ border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.08); }
+  .msg-ic{ font-size:16px; }
+  .msg-txt{ font-size:12.5px; color:var(--text-mid); line-height:1.5; }
+  .msg-time{ font-size:10px; color:var(--text-low); margin-top:4px; }
+
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .action-btn{ flex:1; min-width:140px; padding:13px; border-radius:12px; border:1px solid var(--border-glass); background:rgba(59,130,246,0.1);
+    color:var(--text-hi); font-size:13px; font-weight:600; cursor:pointer; text-align:center; text-decoration:none; display:block; }
+  .action-btn.primary{ background:linear-gradient(135deg,var(--blue),var(--purple)); border:none; }
+  .action-btn.ok{ background:rgba(34,197,94,0.12); border-color:rgba(34,197,94,0.35); }
+  .action-btn.ghost{ background:transparent; }
+  textarea{ width:100%; background:rgba(15,23,42,0.4); border:1px solid var(--border-glass); border-radius:10px; color:var(--text-hi); padding:10px; font-size:12.5px; font-family:inherit; resize:vertical; min-height:60px; margin-bottom:8px; }
+
+  .chart-wrap{ height:90px; }
+
+  /* Login / Register screens */
+  #login-screen{ min-height:100vh; display:grid; grid-template-columns: 1.1fr 0.9fr; margin:-22px; }
+  @media (max-width: 900px){ #login-screen{ grid-template-columns: 1fr; } }
+
+  /* Role picker (first screen — routes to the right portal) */
+  #role-screen{ min-height:100vh; display:flex; align-items:center; justify-content:center; margin:-22px; }
+  .role-card{ width:100%; max-width:460px; padding:20px; }
+  .role-title{ font-size:22px; font-weight:700; text-align:center; margin-bottom:6px; }
+  .role-sub{ font-size:13px; color:var(--text-mid); text-align:center; margin-bottom:26px; }
+  .role-opt{ display:flex; align-items:center; gap:14px; width:100%; padding:16px 18px; margin-bottom:12px;
+    border-radius:14px; border:1px solid var(--border-glass); background:var(--panel-glass); color:var(--text-hi);
+    cursor:pointer; font-size:14.5px; font-weight:600; text-align:left; transition: border-color .15s, transform .15s; }
+  .role-opt:hover{ border-color: var(--blue); transform: translateY(-1px); }
+  .role-opt .role-ic{ font-size:22px; }
+  .role-opt .role-desc{ font-size:11.5px; font-weight:400; color:var(--text-mid); margin-top:2px; }
+  .login-left{ position:relative; display:flex; flex-direction:column; justify-content:center; padding: 6vw; overflow:hidden;
+    background: linear-gradient(160deg, rgba(59,130,246,0.25), rgba(15,23,42,0) 55%), linear-gradient(180deg, var(--bg-1), var(--bg-0)); }
+  .login-left::before{ content:""; position:absolute; inset:-20%;
+    background: radial-gradient(600px 600px at 30% 30%, rgba(59,130,246,0.18), transparent 60%);
+    animation: drift 14s ease-in-out infinite alternate; }
+  @keyframes drift{ from{ transform: translate(-3%, -2%) scale(1); } to{ transform: translate(3%, 4%) scale(1.08); } }
+  .login-headline{ position:relative; z-index:1; font-size: clamp(28px, 4vw, 46px); font-weight: 700; line-height:1.1; letter-spacing:-0.02em; max-width:520px; }
+  .login-headline span{ background: linear-gradient(90deg, var(--blue), #60A5FA 40%, var(--purple)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .login-desc{ position:relative; z-index:1; margin-top:20px; color:var(--text-mid); max-width:440px; font-size:14.5px; line-height:1.6; }
+  .login-right{ display:flex; align-items:center; justify-content:center; padding:6vw; background: var(--bg-1); border-left:1px solid var(--border-glass); overflow-y:auto; }
+  .login-card{ width:100%; max-width:380px; background: var(--panel-glass); border:1px solid var(--border-glass); border-radius:18px;
+    padding: 36px 32px; backdrop-filter: blur(20px); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+  .login-card.wide{ max-width:560px; }
+  .login-card h2{ font-size:20px; margin-bottom:4px; }
+  .login-card p.hint{ color:var(--text-mid); font-size:13px; margin-bottom:28px; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12px; color:var(--text-mid); margin-bottom:6px; }
+  .field input, .field select{ width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--border-glass);
+    background: rgba(15,23,42,0.6); color:var(--text-hi); font-size:14px; outline:none; transition: border-color .2s; }
+  .field input:focus, .field select:focus{ border-color: var(--blue); }
+  .btn-primary{ width:100%; padding:12px; border:none; border-radius:10px; background: linear-gradient(90deg, var(--blue), #2563EB);
+    color:white; font-weight:600; font-size:14px; cursor:pointer; transition: transform .15s, box-shadow .15s; }
+  .btn-primary:hover{ transform: translateY(-1px); box-shadow:0 10px 24px rgba(59,130,246,0.35); }
+  .link-btn{ background:none; border:none; color:var(--blue); font-size:12.5px; cursor:pointer; padding:0; text-decoration:underline; }
+  .demo-creds{ margin-top:20px; padding:12px 14px; border-radius:10px; background: rgba(59,130,246,0.08); border:1px dashed rgba(59,130,246,0.35);
+    font-size:12px; color:var(--text-mid); line-height:1.7; }
+  .demo-creds b{ color:var(--text-hi); }
+  .reg-section-lbl{ font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--blue); margin: 18px 0 10px; font-weight:700; }
+  .reg-section-lbl:first-child{ margin-top:0; }
+  .reg-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+  @media (max-width:520px){ .reg-grid{ grid-template-columns:1fr; } }
+  .switch-line{ text-align:center; margin-top:18px; font-size:12.5px; color:var(--text-mid); }
+
+  /* Patient details popup modal (shown after registration/first login) */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(4,8,16,0.72); backdrop-filter: blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:200; padding:24px; }
+  .modal-overlay.open{ display:flex; }
+  .modal-card{ width:100%; max-width:640px; max-height:88vh; background:var(--panel); border:1px solid var(--border-glass);
+    border-radius:18px; box-shadow:0 24px 60px rgba(0,0,0,0.5); display:flex; flex-direction:column; overflow:hidden; }
+  .modal-head{ padding:22px 28px 16px; border-bottom:1px solid var(--border-glass); flex-shrink:0; }
+  .modal-head h2{ margin:0 0 4px; font-size:19px; }
+  .modal-head p{ margin:0; font-size:12.5px; color:var(--text-mid); }
+  .modal-body{ padding:20px 28px; overflow-y:auto; flex:1 1 auto; }
+  .modal-body::-webkit-scrollbar{ width:9px; }
+  .modal-body::-webkit-scrollbar-track{ background:transparent; }
+  .modal-body::-webkit-scrollbar-thumb{ background:rgba(148,163,184,0.3); border-radius:8px; }
+  .modal-body::-webkit-scrollbar-thumb:hover{ background:rgba(148,163,184,0.5); }
+  .modal-foot{ padding:16px 28px 22px; border-top:1px solid var(--border-glass); flex-shrink:0; }
+
+  /* Patient Information grid */
+  .patient-info-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+  @media (max-width:560px){ .patient-info-grid{ grid-template-columns: repeat(2,1fr); } }
+  .pi-item{ background: rgba(15,23,42,0.4); border:1px solid var(--border-glass); border-radius:12px; padding:10px 12px; }
+  .pi-item .pi-lbl{ font-size:10px; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.03em; }
+  .pi-item .pi-val{ font-size:13px; font-weight:700; margin-top:4px; }
+
+  /* Home header */
+  .home-header{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+  .greet h1{ font-size:20px; margin:0 0 4px; font-weight:700; letter-spacing:-0.01em; }
+  .greet p{ margin:0; font-size:12.5px; color:var(--text-mid); }
+  .header-right{ display:flex; align-items:center; gap:14px; }
+  .score-ring-wrap{ position:relative; width:64px; height:64px; }
+  .score-ring-wrap .score-num{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; }
+  .device-chip{ display:flex; flex-direction:column; align-items:flex-end; gap:4px; font-size:11px; color:var(--text-mid); }
+  .device-chip .dc-status{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--green); font-weight:600; }
+  .device-chip .dc-status .pulse{ width:7px; height:7px; border-radius:50%; background:var(--green); animation: pulse 1.8s infinite; }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(34,197,94,0.5); } 70%{ box-shadow:0 0 0 8px rgba(34,197,94,0); } 100%{ box-shadow:0 0 0 0 rgba(34,197,94,0); } }
+  .batt-track{ width:64px; height:6px; border-radius:999px; background:rgba(148,163,184,0.2); overflow:hidden; }
+  .batt-fill{ height:100%; background:linear-gradient(90deg,var(--green),#4ADE80); }
+
+  /* Live readings */
+  .live-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media (max-width:560px){ .live-grid{ grid-template-columns:repeat(2,1fr); } }
+  .live-tile{ background:rgba(15,23,42,0.4); border:1px solid var(--border-glass); border-radius:14px; padding:14px; }
+  .live-tile .lt-lbl{ font-size:10.5px; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.03em; display:flex; align-items:center; gap:5px; }
+  .live-tile .lt-val{ font-size:19px; font-weight:800; margin-top:6px; }
+  .live-tile .lt-unit{ font-size:11px; color:var(--text-mid); font-weight:400; }
+
+  /* AI risk card */
+  .risk-top{ display:flex; align-items:center; gap:16px; }
+  .risk-badge-lg{ font-size:11px; font-weight:700; padding:4px 12px; border-radius:999px; text-transform:uppercase; letter-spacing:0.03em; }
+  .rb-low{ background: rgba(34,197,94,0.15); color:#22C55E; }
+  .rb-moderate{ background: rgba(249,115,22,0.15); color:#F97316; }
+  .rb-high{ background: rgba(220,38,38,0.15); color:#F87171; }
+  .rb-critical{ background: rgba(220,38,38,0.25); color:#FCA5A5; }
+  .rb-calibrating{ background: rgba(59,130,246,0.15); color:#60A5FA; }
+  .risk-pct{ font-size:30px; font-weight:800; }
+  .ai-rec{ margin-top:12px; font-size:12.5px; color:var(--text-mid); line-height:1.6; padding:12px; border-radius:12px; background:rgba(168,85,247,0.06); border:1px solid rgba(168,85,247,0.2); }
+  .risk-updated{ font-size:11px; color:var(--text-low); margin-top:10px; }
+
+  .heatmap-mini{ display:flex; gap:18px; justify-content:center; }
+  .foot-lbl{ text-align:center; font-size:10.5px; color:var(--text-mid); margin-top:4px; }
+  .heat-legend{ display:flex; gap:14px; justify-content:center; margin-top:10px; font-size:10.5px; color:var(--text-mid); }
+  .heat-legend span{ display:flex; align-items:center; gap:5px; }
+  .heat-legend i{ width:9px; height:9px; border-radius:2px; display:inline-block; }
+  .heat-readout{ display:flex; justify-content:center; gap:22px; margin-top:10px; font-size:11.5px; color:var(--text-mid); }
+  .heat-readout b{ color:var(--text-hi); }
+
+  /* Connect to doctor */
+  .connect-options{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:4px; }
+  @media (max-width:560px){ .connect-options{ grid-template-columns:1fr; } }
+  .connect-opt{ text-align:left; padding:13px 14px; border-radius:12px; border:1px solid var(--border-glass); background:rgba(15,23,42,0.4);
+    color:var(--text-hi); cursor:pointer; font-size:13px; font-weight:600; }
+  .connect-opt .co-sub{ font-size:11px; color:var(--text-mid); font-weight:400; margin-top:3px; }
+  .connect-opt:hover{ border-color:var(--blue); }
+  .connect-confirm{ margin-top:12px; padding:12px 14px; border-radius:12px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); font-size:12.5px; color:var(--text-hi); display:none; }
+
+  /* History section */
+  .history-days{ display:flex; gap:6px; align-items:flex-end; height:90px; }
+  .history-day-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; }
+  .history-day-bar{ width:100%; border-radius:6px 6px 3px 3px; min-height:4px; }
+  .history-day-lbl{ font-size:9.5px; color:var(--text-mid); }
+  .report-item{ padding:12px 14px; border-radius:12px; background:rgba(15,23,42,0.4); border:1px solid var(--border-glass); margin-bottom:8px; }
+  .report-item .rp-top{ display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; }
+  .report-item .rp-sub{ font-size:11px; color:var(--text-mid); margin-top:4px; white-space:pre-wrap; line-height:1.5; }
+</style>
+<!-- Supabase JS client (official). Auth + Postgres tables handle the one-time registration record
+     and real login, replacing the demo shortcut below once configured. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<!-- ===================== ROLE PICKER (first screen) ===================== -->
+<div id="role-screen">
+  <div class="role-card">
+    <div class="role-title">🩺 SmartSense FootGuard Pro</div>
+    <div class="role-sub">Who's signing in?</div>
+    <button class="role-opt" onclick="chooseRole('patient')">
+      <span class="role-ic">🧍</span>
+      <span><div>Patient</div><div class="role-desc">Track your foot health, readings, and risk score</div></span>
+    </button>
+    <button class="role-opt" onclick="chooseRole('doctor')">
+      <span class="role-ic">👩‍⚕️</span>
+      <span><div>Doctor</div><div class="role-desc">Monitor your patients from the clinical dashboard</div></span>
+    </button>
+    <button class="role-opt" onclick="chooseRole('admin')">
+      <span class="role-ic">🗂️</span>
+      <span><div>Admin</div><div class="role-desc">Manage patients, doctors, and hospital records</div></span>
+    </button>
+    <div class="switch-line"><a href="index.html" style="color:var(--blue);">← Back to Diab-Aid Home</a></div>
+  </div>
+</div>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="login-screen" style="display:none;">
+  <div class="login-left">
+    <div class="brand-mark" style="display:flex; align-items:center; gap:10px; margin-bottom:40px;">
+      <div class="brand-icon">🩺</div>
+      <div><div class="brand-name">My Foot Health</div><div class="brand-sub">SmartSense FootGuard Pro — Patient Portal</div></div>
+    </div>
+    <h1 class="login-headline">Know your risk.<br><span>Before it becomes a wound.</span></h1>
+    <p class="login-desc">Your foot sensor readings, explained in plain language, with a direct line to your care team the moment something needs attention.</p>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h2>Welcome back</h2>
+      <p class="hint">Sign in to see your foot health status</p>
+      <div class="field"><label>Email</label><input id="login-email" type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input id="login-password" type="password" placeholder="••••••••"></div>
+      <button class="btn-primary" onclick="doLogin()">Sign In</button>
+      <div id="login-error" style="display:none; margin-top:12px; padding:10px 12px; border-radius:10px; background:rgba(220,38,38,0.1); border:1px solid rgba(220,38,38,0.3); font-size:12px; color:#FCA5A5;"></div>
+      <div class="switch-line">First time here? <button class="link-btn" onclick="showRegister()">Create your account</button></div>
+      <div class="switch-line">Not a patient? <button class="link-btn" onclick="backToRoles()">Choose a different portal</button></div>
+      <div class="demo-creds"><b>Try the demo</b><br>patient@diabhelp.ai · Patient@123<br><span style="opacity:0.75;">(loads a seeded demo patient — or register your own profile above)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PATIENT DETAILS POPUP (pops up on registration / first login only) ===================== -->
+<div id="register-screen" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Tell us about you</h2>
+      <p class="hint">Asked once, right after you sign up — everything after this comes straight from your foot sensor, no typing required.</p>
+    </div>
+    <div class="modal-body">
+      <div class="reg-section-lbl">Personal Details</div>
+      <div class="reg-grid">
+        <div class="field"><label>Full Name</label><input id="reg-name" type="text" placeholder="e.g. Sri Kumar"></div>
+        <div class="field"><label>Age</label><input id="reg-age" type="number" min="1" max="120" placeholder="e.g. 58"></div>
+        <div class="field"><label>Gender</label><select id="reg-gender"><option value="">Select</option><option>Female</option><option>Male</option><option>Other</option></select></div>
+        <div class="field"><label>Height (cm)</label><input id="reg-height" type="number" min="50" max="250" placeholder="e.g. 165"></div>
+        <div class="field"><label>Weight (kg)</label><input id="reg-weight" type="number" min="20" max="250" placeholder="e.g. 72"></div>
+        <div class="field"><label>Blood Group</label><select id="reg-blood"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+        <div class="field"><label>Phone Number</label><input id="reg-phone" type="tel" placeholder="e.g. 98765 43210"></div>
+        <div class="field"><label>Emergency Contact</label><input id="reg-emergency" type="tel" placeholder="e.g. 91234 56789"></div>
+      </div>
+
+      <div class="reg-section-lbl">Medical Details</div>
+      <div class="reg-grid">
+        <div class="field"><label>Diabetes Type</label><select id="reg-diabetes-type"><option value="">Select</option><option>Type 1</option><option>Type 2</option><option>Gestational</option><option>Other</option></select></div>
+        <div class="field"><label>Years with Diabetes</label><input id="reg-diabetes-years" type="number" min="0" max="80" placeholder="e.g. 10"></div>
+        <div class="field"><label>HbA1c (%)</label><input id="reg-hba1c" type="number" step="0.1" min="3" max="20" placeholder="e.g. 7.2"></div>
+        <div class="field"><label>Existing Foot Ulcer</label><select id="reg-ulcer"><option value="">Select</option><option>No</option><option>Yes</option></select></div>
+        <div class="field"><label>Neuropathy</label><select id="reg-neuropathy"><option value="">Select</option><option>No</option><option>Yes</option></select></div>
+        <div class="field"><label>Previous Foot Surgery</label><select id="reg-foot-surgery"><option value="">Select</option><option>No</option><option>Yes</option></select></div>
+      </div>
+
+      <div class="reg-section-lbl">Doctor Details</div>
+      <div class="reg-grid">
+        <div class="field"><label>Hospital Name</label><input id="reg-hospital" type="text" placeholder="e.g. Apollo Hospitals"></div>
+        <div class="field"><label>Doctor Name</label><input id="reg-doctor" type="text" placeholder="e.g. Dr. Anitha Rao"></div>
+      </div>
+      <div id="reg-error" style="display:none; margin-top:4px; padding:10px 12px; border-radius:10px; background:rgba(220,38,38,0.1); border:1px solid rgba(220,38,38,0.3); font-size:12px; color:#FCA5A5;"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-primary" onclick="submitRegistration()">Save &amp; Continue</button>
+      <div class="switch-line">Already registered? <button class="link-btn" onclick="showLogin()">Sign in instead</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP ===================== -->
+<div id="app-screen" style="display:none;">
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="brand-icon">🩺</div>
+      <div><div class="brand-name">My Foot Health</div><div class="brand-sub">SmartSense FootGuard Pro</div></div>
+    </div>
+    <select id="patient-select" onchange="switchPatient(this.value)" title="Demo: view another seeded profile"></select>
+  </div>
+
+  <!-- Top: greeting, health score, device connected, battery -->
+  <div class="card">
+    <div class="home-header">
+      <div class="greet">
+        <h1 id="greet-name">Good Morning, Sri</h1>
+        <p id="greet-date">Today's Health Score reflects your last few sensor readings.</p>
+      </div>
+      <div class="header-right">
+        <div>
+          <svg class="score-ring-wrap" width="64" height="64" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="27" fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="7"/>
+            <circle id="score-ring-arc" cx="32" cy="32" r="27" fill="none" stroke="#22C55E" stroke-width="7" stroke-linecap="round"
+              stroke-dasharray="169.6" stroke-dashoffset="169.6" transform="rotate(-90 32 32)"/>
+          </svg>
+          <div class="score-ring-wrap" style="margin-top:-64px;"><div class="score-num" id="score-num">--</div></div>
+        </div>
+        <div class="device-chip">
+          <div class="dc-status"><span class="pulse"></span> <span id="device-status">Device Connected</span></div>
+          <div class="batt-track"><div class="batt-fill" id="batt-fill" style="width:0%;"></div></div>
+          <span id="batt-pct">Battery --%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>My Information</h3>
+    <div class="patient-info-grid" id="patient-info-grid"></div>
+  </div>
+
+  <!-- Live Readings — automatic from ESP32, no user input -->
+  <div class="card">
+    <h3>Live Readings <span style="font-weight:400; text-transform:none; letter-spacing:0;">— automatic, from your foot sensor</span></h3>
+    <div class="live-grid">
+      <div class="live-tile"><div class="lt-lbl">📟 Pressure</div><div class="lt-val" id="lv-pressure">--<span class="lt-unit"> kPa</span></div></div>
+      <div class="live-tile"><div class="lt-lbl">🌡️ Temperature</div><div class="lt-val" id="lv-temp">--<span class="lt-unit"> °C</span></div></div>
+      <div class="live-tile"><div class="lt-lbl">👣 Step Count</div><div class="lt-val" id="lv-steps">--<span class="lt-unit"> steps</span></div></div>
+      <div class="live-tile"><div class="lt-lbl">⏱️ Walking Time</div><div class="lt-val" id="lv-walktime">--<span class="lt-unit"> min</span></div></div>
+    </div>
+  </div>
+
+  <!-- AI Risk Card -->
+  <div class="card">
+    <h3>AI Risk Card</h3>
+    <div class="risk-top">
+      <div class="risk-pct" id="ai-risk-pct">--%</div>
+      <span class="risk-badge-lg" id="ai-risk-badge">--</span>
+    </div>
+    <div class="ai-rec" id="ai-recommendation">Waiting for your first few readings...</div>
+    <div class="risk-updated">Last Updated: <span id="ai-last-updated">--</span></div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="card">
+    <h3>Heatmap — Both Feet, Live</h3>
+    <div class="heatmap-mini" id="heatmap-mini"></div>
+    <div class="heat-legend"><span><i style="background:#22C55E;"></i>Low</span><span><i style="background:#F97316;"></i>Elevated</span><span><i style="background:#DC2626;"></i>Concentrated / High</span></div>
+    <div class="heat-readout" id="heat-readout"></div>
+  </div>
+
+  <!-- Connect to Doctor -->
+  <div class="card">
+    <h3>Connect to Doctor</h3>
+    <p class="sub">Choose what you'd like to see your doctor about — it will appear in their Appointments queue.</p>
+    <div class="connect-options">
+      <button class="connect-opt" onclick="connectToDoctor('General Checkup')">🩺 General Checkup<div class="co-sub">Routine review of your foot health</div></button>
+      <button class="connect-opt" onclick="connectToDoctor('Urgent Concern')">🚨 Urgent Concern<div class="co-sub">Something feels off right now</div></button>
+      <button class="connect-opt" onclick="connectToDoctor('Follow-up Review')">📋 Follow-up Review<div class="co-sub">Check-in on a previous issue</div></button>
+      <button class="connect-opt" onclick="connectToDoctor('Video Consultation')">🎥 Video Consultation<div class="co-sub">Talk to your doctor remotely</div></button>
+    </div>
+    <div class="connect-confirm" id="connect-confirm"></div>
+  </div>
+
+  <div class="card">
+    <h3>Messages From Your Care Team</h3>
+    <div id="msg-list"><p style="font-size:12.5px;color:var(--text-mid);">No messages yet — you'll see advice here if your readings need attention.</p></div>
+  </div>
+
+  <div class="card">
+    <h3>Quick Actions</h3>
+    <div class="actions">
+      <a class="action-btn primary" id="call-doctor-btn" href="tel:">📞 Call My Doctor</a>
+      <button class="action-btn ok" onclick="logFeelingFine()">✅ I Feel Fine Today</button>
+    </div>
+    <div style="margin-top:14px;">
+      <textarea id="symptom-input" placeholder="Notice something? e.g. redness, a sore spot, numbness — describe it here"></textarea>
+      <button class="action-btn" style="width:100%;" onclick="logSymptom()">📝 Send Note to My Doctor</button>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="card">
+    <h3>Last 7 Days Risk</h3>
+    <div class="history-days" id="history-days"></div>
+  </div>
+
+  <div class="row2">
+    <div class="card">
+      <h3>Pressure Graph</h3>
+      <div class="chart-wrap"><svg id="chart-pressure-svg" width="100%" height="90" viewBox="0 0 300 90" preserveAspectRatio="none"></svg></div>
+    </div>
+    <div class="card">
+      <h3>Temperature Graph</h3>
+      <div class="chart-wrap"><svg id="chart-temp-svg" width="100%" height="90" viewBox="0 0 300 90" preserveAspectRatio="none"></svg></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Previous Reports</h3>
+    <button class="action-btn ghost" style="width:100%; margin-bottom:12px;" onclick="captureReport()">📄 Save Current Snapshot as Report</button>
+    <div id="reports-list"><p style="font-size:12.5px;color:var(--text-mid);">No reports yet — snapshots are captured automatically as your readings change, or tap the button above.</p></div>
+  </div>
+</div>
+</div>
+
+<script>
+/* Self-contained demo simulation — mirrors the doctor dashboard's risk model and heatmap rendering, so
+   the two views tell a consistent story. In a real deployment both this page and footguard-dashboard.html
+   would read the same live Supabase data instead of simulating independently. Patient connection requests
+   ("Connect to Doctor") and, in a fuller deployment, live readings would flow through shared backend
+   storage — here that bridge is implemented with the artifact storage API so a request made here shows
+   up live in the doctor dashboard's Appointments view. */
+
+/* ===================== SUPABASE SETUP =====================
+   The actual project URL / anon key live in supabase-config.js (loaded above, shared by every
+   page in this site) — edit that ONE file to connect this whole app to your Supabase project.
+   Enable Email/Password sign-in under Supabase Authentication → Providers.
+   Every account (patient, doctor, or admin) is a Supabase Auth user. Their role and profile live
+   in Postgres tables:
+     users    → { id (=auth uid), role: 'patient'|'doctor'|'admin', ...basic info }
+     patients → id (=auth uid), patient_id, personal_details jsonb, medical_details jsonb, doctor_details jsonb (this file writes these)
+     doctors  → written by footguard-dashboard.html
+     admins   → written by admin-dashboard.html                                                        */
+const supabaseClient = window.supabaseClient || null;
+if(!supabaseClient){ console.warn('Supabase not initialized — check supabase-config.js.'); }
+
+/* ===================== ROLE PICKER (first screen) ===================== */
+function chooseRole(role){
+  if(role === 'doctor'){ window.location.href = 'footguard-dashboard.html'; return; }
+  if(role === 'admin'){ window.location.href = 'admin-dashboard.html'; return; }
+  document.getElementById('role-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'grid';
+}
+function backToRoles(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('register-screen').classList.remove('open');
+  document.getElementById('role-screen').style.display = 'flex';
+}
+// Lets other pages (footguard-dashboard.html, admin-dashboard.html) deep-link straight to the patient
+// login instead of dropping the user on the role picker, e.g. <a href="patient-dashboard.html#patient">.
+if(location.hash === '#patient'){ chooseRole('patient'); }
+
+/* Creates the Supabase Auth account for a newly-registered patient, then writes their role (to "users")
+   and their full one-time registration record (to "patients") — both keyed by the Auth UID so the doctor
+   and admin dashboards can look the same person up. Falls back to local-only demo mode if Supabase isn't
+   configured yet, so the form still works while you set up your project. */
+async function saveRegistrationToSupabase(patient){
+  if(!supabaseClient){ console.warn('Skipped Supabase save — supabase-config.js is still using placeholder values.'); return; }
+  try{
+    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
+      email: patient.credentials.email, password: patient.credentials.password
+    });
+    if(signUpError) throw signUpError;
+    const uid = signUpData.user.id;
+    patient.uid = uid;
+    const nowIso = new Date().toISOString();
+    await supabaseClient.from('users').upsert({
+      id: uid, role: 'patient', patient_id: patient.id, name: patient.name, email: patient.credentials.email,
+      created_at: nowIso
+    });
+    await supabaseClient.from('patients').upsert({
+      id: uid,
+      patient_id: patient.id,
+      personal_details: {
+        fullName: patient.name, age: patient.age, gender: patient.gender,
+        heightCm: Math.round(patient.heightM*100), weightKg: patient.weightKg,
+        bloodGroup: patient.bloodGroup, phone: patient.phone, emergencyContact: patient.emergency
+      },
+      medical_details: {
+        diabetesType: patient.diabetesType, diabetesYears: patient.diabetesYears, hba1c: patient.hba1c,
+        existingFootUlcer: patient.hasUlcer, neuropathy: patient.hasNeuropathy,
+        previousFootSurgery: patient.hasFootSurgery
+      },
+      doctor_details: { hospitalName: patient.hospitalName, doctorName: patient.doctorName },
+      created_at: nowIso
+    });
+  }catch(e){
+    console.error('Supabase registration failed:', e);
+    const errBox = document.getElementById('reg-error');
+    if(errBox){ errBox.textContent = 'Account details were kept on this device, but saving to the server failed: ' + e.message; errBox.style.display = 'block'; }
+  }
+}
+
+/* Rebuilds the in-app patient object (the shape the risk-simulation code expects) from a Supabase
+   "patients" row, so a returning patient's own data loads instead of a seeded demo profile. */
+function patientFromSupabaseRow(uid, id, d){
+  const pd = d.personal_details || {}, md = d.medical_details || {}, dd = d.doctor_details || {};
+  const heightM = (pd.heightCm || 165) / 100, weightKg = pd.weightKg || 70;
+  const escalate = (md.existingFootUlcer === 'Yes') || (md.neuropathy === 'Yes' && Number(md.hba1c) >= 8);
+  return {
+    id, uid, name: pd.fullName, age: pd.age, gender: pd.gender, ward: 'Registered Patient', escalate,
+    weightKg, heightM, priorEpisodes: md.existingFootUlcer === 'Yes' ? 1 : 0, walkMinutes: 40,
+    diabetesType: md.diabetesType, diabetesYears: md.diabetesYears, hba1c: md.hba1c,
+    hasUlcer: md.existingFootUlcer, hasNeuropathy: md.neuropathy, hasFootSurgery: md.previousFootSurgery,
+    phone: pd.phone, emergency: pd.emergencyContact, bloodGroup: pd.bloodGroup,
+    hospitalName: dd.hospitalName, doctorName: dd.doctorName,
+    baseline:{ pressure: 24 + Math.max(0,(weightKg-60))*0.14 + (escalate?4:0), temp: 32.4 + (escalate?0.3:0), humidity: 42 },
+    history: [], learnedBaseline: null, stepsToday: 0, isDemo:false
+  };
+}
+
+const CALIBRATION_READINGS = 8;
+const patients = [
+  { id:"P-1042", name:"Meena R.", age:58, gender:"Female", ward:"Diabetology", escalate:true, weightKg:78, heightM:1.58, priorEpisodes:2, walkMinutes:40, diabetesType:"Type 2", diabetesYears:14,
+    baseline:{pressure:32, temp:33.2, humidity:45}, history:[], learnedBaseline:null, stepsToday:0, isDemo:true },
+  { id:"P-1043", name:"Suresh K.", age:64, gender:"Male", ward:"Diabetology", escalate:false, weightKg:82, heightM:1.72, priorEpisodes:0, walkMinutes:65, diabetesType:"Type 2", diabetesYears:9,
+    baseline:{pressure:28, temp:32.8, humidity:40}, history:[], learnedBaseline:null, stepsToday:0, isDemo:true },
+  { id:"P-1044", name:"Lakshmi V.", age:49, gender:"Female", ward:"Endocrinology", escalate:false, weightKg:64, heightM:1.60, priorEpisodes:0, walkMinutes:80, diabetesType:"Type 1", diabetesYears:22,
+    baseline:{pressure:25, temp:32.5, humidity:42}, history:[], learnedBaseline:null, stepsToday:0, isDemo:true },
+  { id:"P-1045", name:"Ibrahim S.", age:71, gender:"Male", ward:"Diabetology", escalate:false, weightKg:90, heightM:1.68, priorEpisodes:1, walkMinutes:25, diabetesType:"Type 2", diabetesYears:17,
+    baseline:{pressure:30, temp:33.0, humidity:44}, history:[], learnedBaseline:null, stepsToday:0, isDemo:true },
+];
+let selectedId = null; // no patient selected until login/registration
+let messages = [];
+let reports = [];
+const rand=(a,b)=>a+Math.random()*(b-a);
+
+/* ===================== AUTH: LOGIN ===================== */
+async function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errBox = document.getElementById('login-error');
+  if(errBox) errBox.style.display = 'none';
+
+  // Demo shortcut — always works, even before Supabase is configured.
+  if(email === 'patient@diabhelp.ai' && password === 'Patient@123'){
+    selectedId = patients[0].id;
+    enterApp();
+    return;
+  }
+  if(!supabaseClient){
+    if(errBox){ errBox.textContent = 'Supabase isn\'t configured yet — use the demo login, or add your project URL/anon key in supabase-config.js.'; errBox.style.display = 'block'; }
+    return;
+  }
+  try{
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if(signInError) throw signInError;
+    const uid = signInData.user.id;
+    const { data: userRow, error: userErr } = await supabaseClient.from('users').select('*').eq('id', uid).single();
+    if(userErr || !userRow || userRow.role !== 'patient'){
+      await supabaseClient.auth.signOut();
+      if(errBox){ errBox.textContent = 'This account isn\'t registered as a patient here — pick the right portal on the previous screen.'; errBox.style.display = 'block'; }
+      return;
+    }
+    const { data: patientRow } = await supabaseClient.from('patients').select('*').eq('id', uid).single();
+    const id = userRow.patient_id || uid;
+    let existing = patients.find(p=>p.uid === uid);
+    if(!existing){
+      existing = patientFromSupabaseRow(uid, id, patientRow || {});
+      patients.push(existing);
+    }
+    selectedId = existing.id;
+    enterApp();
+  }catch(e){
+    if(errBox){ errBox.textContent = 'Sign-in failed: ' + e.message; errBox.style.display = 'block'; }
+  }
+}
+function showRegister(){
+  document.getElementById('register-screen').classList.add('open');
+}
+function showLogin(){
+  document.getElementById('register-screen').classList.remove('open');
+  document.getElementById('login-screen').style.display = 'grid';
+}
+
+/* ===================== AUTH: REGISTRATION (asked once) ===================== */
+async function submitRegistration(){
+  const val = id => document.getElementById(id).value.trim();
+  const name = val('reg-name'), age = val('reg-age'), gender = val('reg-gender'),
+    height = val('reg-height'), weight = val('reg-weight'), blood = val('reg-blood'),
+    phone = val('reg-phone'), emergency = val('reg-emergency'),
+    diabetesType = val('reg-diabetes-type'), diabetesYears = val('reg-diabetes-years'),
+    hba1c = val('reg-hba1c'), ulcer = val('reg-ulcer'), neuropathy = val('reg-neuropathy'),
+    footSurgery = val('reg-foot-surgery'), hospital = val('reg-hospital'), doctor = val('reg-doctor');
+
+  const errBox = document.getElementById('reg-error');
+  if(!name || !age || !gender || !height || !weight || !blood || !phone || !emergency || !diabetesType || !diabetesYears || !hba1c || !ulcer || !neuropathy || !footSurgery || !hospital || !doctor){
+    errBox.textContent = 'Please fill in every field — these details are only asked once.';
+    errBox.style.display = 'block';
+    return;
+  }
+  errBox.style.display = 'none';
+
+  const heightM = Number(height) / 100;
+  const weightKg = Number(weight);
+  const hba1cNum = Number(hba1c);
+  const escalate = (ulcer === 'Yes') || (neuropathy === 'Yes' && hba1cNum >= 8);
+  const id = 'P-' + Math.floor(1000 + Math.random()*9000);
+
+  // The values the user just entered become both their profile AND, together with the generated ID,
+  // their login credentials — this account is registered exactly once.
+  const generatedEmail = (name.toLowerCase().replace(/[^a-z]/g,'') || 'patient') + '.' + id.toLowerCase() + '@myfoothealth.demo';
+  const generatedPassword = 'FG-' + Math.random().toString(36).slice(-6).toUpperCase();
+
+  const patient = {
+    id, name, age:Number(age), gender, ward:'Registered Patient', escalate,
+    weightKg, heightM, priorEpisodes: ulcer==='Yes' ? 1 : 0, walkMinutes: 40,
+    diabetesType, diabetesYears:Number(diabetesYears), hba1c:hba1cNum,
+    hasUlcer: ulcer, hasNeuropathy: neuropathy, hasFootSurgery: footSurgery, phone, emergency, bloodGroup: blood,
+    hospitalName: hospital, doctorName: doctor,
+    baseline:{ pressure: 24 + Math.max(0,(weightKg-60))*0.14 + (escalate?4:0), temp: 32.4 + (escalate?0.3:0), humidity: 42 },
+    history: [], learnedBaseline: null, stepsToday: 0, isDemo:false,
+    credentials:{ email: generatedEmail, password: generatedPassword }
+  };
+  patients.push(patient);
+  selectedId = id;
+  await saveRegistrationToSupabase(patient); // one-time write of registration details + Auth account to Supabase
+
+  showLogin();
+  document.getElementById('login-email').value = generatedEmail;
+  document.getElementById('login-password').value = generatedPassword;
+  enterApp(`Your login was created from the details you entered — Email: ${generatedEmail} · Password: ${generatedPassword}`);
+}
+
+function enterApp(welcomeNote){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('register-screen').classList.remove('open');
+  document.getElementById('app-screen').style.display = 'block';
+  populateSelect();
+  patients.forEach(p=>{ if(p.history.length===0) seedHistory(p); });
+  render();
+  if(welcomeNote) pushMsg(patients.find(p=>p.id===selectedId), 'ok', welcomeNote);
+  setInterval(()=>{ patients.forEach(stepPatient); render(); }, 2500);
+}
+
+function bmiOf(p){ return p.weightKg/(p.heightM*p.heightM); }
+function learnBaselineIfReady(p){
+  if(p.learnedBaseline || p.history.length < CALIBRATION_READINGS) return;
+  const w = p.history.slice(0,CALIBRATION_READINGS);
+  const avg=k=>w.reduce((s,h)=>s+h[k],0)/w.length;
+  p.learnedBaseline = { pressure:avg('pressure'), temp:avg('temp'), humidity:avg('humidity') };
+}
+function computeRisk(p){
+  learnBaselineIfReady(p);
+  const calibrating = !p.learnedBaseline;
+  const base = p.learnedBaseline || p.baseline;
+  const latest = p.history[p.history.length-1] || base;
+  if(calibrating) return { category:'calibrating', score:0, pressureDelta:0, tempDelta:0 };
+  const bmi = bmiOf(p);
+  const pressureThreshold = 25*(22/bmi);
+  const pressureDelta = Math.max(0, latest.pressure-base.pressure);
+  const tempDelta = Math.max(0, latest.temp-base.temp);
+  const humidityDelta = Math.abs(latest.humidity-base.humidity);
+  const pressureScore = Math.min(100,(pressureDelta/pressureThreshold)*100);
+  const tempScore = Math.min(100,(tempDelta/3)*100);
+  const humidityScore = Math.min(100,(humidityDelta/15)*100);
+  let pTrend=0, tTrend=0;
+  if(p.history.length>=5){
+    const rp=p.history.slice(-5).map(h=>h.pressure), rt=p.history.slice(-5).map(h=>h.temp);
+    pTrend = Math.min(100,Math.max(0,((rp[rp.length-1]-rp[0])/5)*12));
+    tTrend = Math.min(100,Math.max(0,((rt[rt.length-1]-rt[0])/5)*40));
+  }
+  const walkScore = Math.min(100,(p.walkMinutes/180)*100);
+  const histScore = Math.min(100, p.priorEpisodes*35 + (p.priorEpisodes>0?15:0));
+  const score = Math.round(pressureScore*0.30+tempScore*0.25+pTrend*0.15+tTrend*0.10+walkScore*0.10+humidityScore*0.05+histScore*0.05);
+  const clamped = Math.max(0,Math.min(100,score));
+  let category='low'; if(clamped>=75) category='critical'; else if(clamped>=50) category='high'; else if(clamped>=25) category='moderate';
+  return { category, score:clamped, pressureDelta, tempDelta };
+}
+function seedHistory(p){ for(let i=0;i<3;i++){ p.history.push({pressure:p.baseline.pressure+rand(-2,2), temp:p.baseline.temp+rand(-0.3,0.3), humidity:p.baseline.humidity+rand(-3,3), steps: Math.round(rand(20,90)), battery: 96-rand(0,2)}); p.stepsToday += p.history[p.history.length-1].steps; } }
+function stepPatient(p){
+  const last = p.history[p.history.length-1];
+  let pressure,temp,humidity;
+  if(p.escalate){ pressure=Math.min(58,last.pressure+rand(0.6,2.2)); temp=Math.min(p.baseline.temp+3.4,last.temp+rand(0.02,0.12)); humidity=last.humidity+rand(-1,1); }
+  else{ pressure=p.baseline.pressure+rand(-2.5,2.5); temp=p.baseline.temp+rand(-0.25,0.25); humidity=p.baseline.humidity+rand(-2,2); }
+  const steps = Math.round(rand(15,110));
+  const battery = Math.max(12, (last.battery!==undefined?last.battery:95) - rand(0.05,0.3));
+  p.history.push({pressure,temp,humidity,steps,battery});
+  p.stepsToday += steps;
+  p.walkMinutes = Math.max(0, Math.min(180, p.walkMinutes + rand(-2,3)));
+  if(p.history.length>40) p.history.shift();
+  checkForNewMessage(p, computeRisk(p));
+}
+
+const notifiedLevels = {};
+function checkForNewMessage(p, risk){
+  if(risk.category==='calibrating') return;
+  notifiedLevels[p.id] = notifiedLevels[p.id] || new Set();
+  const seen = notifiedLevels[p.id];
+  if(risk.category==='moderate' && !seen.has('moderate')){
+    seen.add('moderate');
+    pushMsg(p, 'advice', `Your foot sensor is showing slightly elevated pressure (${risk.pressureDelta.toFixed(1)}kPa above your usual). Try to reduce time on your feet today, wear your offloading footwear, and check your foot this evening for redness or warmth — if you keep pushing through the soreness instead, it can turn into a real sore.`);
+  }
+  if((risk.category==='high'||risk.category==='critical') && !seen.has('high')){
+    seen.add('high');
+    const urgent = risk.category==='critical';
+    pushMsg(p, urgent?'urgent':'advice', urgent
+      ? `Your readings show a CRITICAL risk of a pressure sore forming. Please contact your clinic immediately or go to urgent care today — don't wait for your next visit.`
+      : `Your readings show a HIGH risk of a pressure sore forming. Please contact your clinic to schedule a check-up within 24 hours, stay off that foot as much as you can, and rest it whenever possible.`);
+  }
+}
+function pushMsg(p, kind, text){
+  if(!p || p.id !== selectedId) return; // demo scope: only show messages for the currently viewed patient
+  messages.unshift({ kind, text, ts: Date.now() });
+  renderMessages();
+}
+function logFeelingFine(){
+  messages.unshift({ kind:'ok', text:"You told your care team you're feeling fine today. Logged.", ts: Date.now() });
+  renderMessages();
+}
+function logSymptom(){
+  const val = document.getElementById('symptom-input').value.trim();
+  if(!val) return;
+  messages.unshift({ kind:'ok', text:`Note sent to your doctor: "${val}"`, ts: Date.now() });
+  document.getElementById('symptom-input').value='';
+  renderMessages();
+}
+
+function populateSelect(){
+  const sel = document.getElementById('patient-select');
+  sel.innerHTML = patients.map(p=>`<option value="${p.id}">${p.name}${p.isDemo?' (demo)':' (you)'}</option>`).join('');
+  sel.value = selectedId;
+}
+function switchPatient(id){ selectedId = id; messages = []; reports = []; render(); }
+
+function renderMessages(){
+  const list = document.getElementById('msg-list');
+  const mine = messages;
+  if(mine.length===0){ list.innerHTML = "<p style=\"font-size:12.5px;color:var(--text-mid);\">No messages yet — you'll see advice here if your readings need attention.</p>"; return; }
+  list.innerHTML = mine.map(m=>`<div class="msg ${m.kind==='urgent'?'urgent':''}">
+    <div class="msg-ic">${m.kind==='urgent'?'🚨':m.kind==='ok'?'✅':'💬'}</div>
+    <div><div class="msg-txt">${m.text}</div><div class="msg-time">${new Date(m.ts).toLocaleTimeString()}</div></div>
+  </div>`).join('');
+}
+
+/* ===================== HEATMAP — real concentrated "shady region" rendering ===================== */
+function zoneColor(p, t){
+  const pScore = Math.min(100, (p / 90) * 100);
+  const tScore = Math.min(100, Math.max(0, (t - 32) / 3 * 100));
+  const combined = (pScore * 0.6) + (tScore * 0.4);
+  // Red-to-orange thermal scale: low combined pressure/heat sits toward warm yellow, high sits at deep red.
+  const stops = [ {stop:0, c:[255,213,74]}, {stop:50, c:[251,146,60]}, {stop:100, c:[185,28,28]} ];
+  const [a,b] = combined <= 50 ? [stops[0],stops[1]] : [stops[1],stops[2]];
+  const tt = (combined - a.stop) / ((b.stop - a.stop) || 1);
+  const c = a.c.map((v,i)=> Math.round(v + (b.c[i]-v)*tt));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+// Same 8-region anatomical layout as the doctor dashboard, scaled down for the patient view.
+const ZONE_DEFS = [
+  { name:'Big Toe',          cx:23, cy:14, r:6 },
+  { name:'Toes II\u2013V',   cx:40, cy:16, r:6.5 },
+  { name:'1st Metatarsal',   cx:19, cy:37, r:6.5 },
+  { name:'Central Metatarsals', cx:32, cy:41, r:8 },
+  { name:'5th Metatarsal',   cx:45, cy:38, r:6.5 },
+  { name:'Midfoot',          cx:32, cy:69, r:9.5 },
+  { name:'Medial Heel',      cx:23, cy:100, r:8.5 },
+  { name:'Lateral Heel',     cx:41, cy:100, r:8.5 },
+];
+const BASE_ZONE_LOAD = [14,12,22,26,20,10,24,22];
+function computeHeatmapZones(risk, patient){
+  const escalated = patient.escalate && risk.category !== 'calibrating';
+  const baseT = patient.baseline ? patient.baseline.temp : 32.0;
+  if(!escalated){
+    return {
+      left: BASE_ZONE_LOAD.map(v=>({ p: Math.max(4, v+rand(-4,4)), t: baseT + rand(-0.2,0.2) })),
+      right: BASE_ZONE_LOAD.map(v=>({ p: Math.max(4, v+rand(-4,4)), t: baseT + rand(-0.2,0.2) }))
+    };
+  }
+  const left = BASE_ZONE_LOAD.map((v,i)=>{
+    if(i===6 || i===7) return { p: Math.min(97, v + risk.score*0.9 + rand(-2,2)), t: baseT + (risk.score/100)*2.5 + rand(-0.2,0.2) };
+    if(i===2 || i===3 || i===4) return { p: Math.min(72, v + risk.score*0.28 + rand(-2,2)), t: baseT + (risk.score/100)*1.0 + rand(-0.2,0.2) };
+    return { p: Math.max(4, v + rand(-3,3)), t: baseT + rand(-0.2,0.2) };
+  });
+  const right = BASE_ZONE_LOAD.map(v=>({ p: Math.max(4, v+rand(-4,4)), t: baseT + rand(-0.2,0.2) }));
+  return {left, right};
+}
+
+function footSvg(vals, sideLabel){
+  const uid = sideLabel.replace(/\s+/g,'') + Math.round(Math.random()*1e6);
+  // Blurred radial-gradient blobs beneath the sharp zone markers give this a real "concentration" look —
+  // elevated regions glow and bleed into their surroundings instead of showing as flat, hard-edged dots.
+  const glowDefs = vals.map((v,i)=>{
+    const c = zoneColor(v.p, v.t);
+    return `<radialGradient id="hg_${uid}_${i}" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="${c}" stop-opacity="${Math.min(0.85, 0.3 + v.p/130)}"/>
+      <stop offset="55%" stop-color="${c}" stop-opacity="${Math.min(0.45, 0.12 + v.p/220)}"/>
+      <stop offset="100%" stop-color="${c}" stop-opacity="0"/>
+    </radialGradient>`;
+  }).join('');
+  const glows = vals.map((v,i)=>{
+    const z = ZONE_DEFS[i];
+    const glowR = z.r * (1.7 + v.p/60);
+    return `<circle cx="${z.cx}" cy="${z.cy}" r="${glowR}" fill="url(#hg_${uid}_${i})" filter="url(#hb_${uid})"/>`;
+  }).join('');
+  const zones = vals.map((v,i)=>{ const z=ZONE_DEFS[i];
+    return `<ellipse cx="${z.cx}" cy="${z.cy}" r="${z.r}" fill="${zoneColor(v.p, v.t)}" fill-opacity="0.8"><title>${z.name}: ${Math.round(v.p)}% load, ${v.t.toFixed(1)}°C</title></ellipse>`;
+  }).join('');
+  return `<svg width="70" height="140" viewBox="0 0 64 128">
+    <defs><filter id="hb_${uid}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3.2"/></filter>${glowDefs}</defs>
+    <path d="M32 8 C44 8 48 26 45 42 C43 58 50 70 47 88 C45 108 38 122 32 122 C26 122 19 108 17 88 C14 70 21 58 19 42 C16 26 20 8 32 8 Z" fill="rgba(148,163,184,0.08)" stroke="rgba(148,163,184,0.25)"/>
+    ${glows}${zones}
+  </svg>`;
+}
+function renderPatientInfo(p, risk){
+  const grid = document.getElementById('patient-info-grid');
+  if(!grid) return;
+  const bmi = Math.round(bmiOf(p)*10)/10;
+  const fields = [
+    ['Patient ID', p.id], ['Name', p.name], ['Age', p.age+' yrs'], ['Gender', p.gender],
+    ['Height', Math.round(p.heightM*100)+' cm'], ['Weight', p.weightKg+' kg'],
+    ['BMI', bmi+(bmi>=30?' (Obese)':bmi>=25?' (Overweight)':' (Normal)')],
+    ['Diabetes Type', p.diabetesType], ['Duration of Diabetes', p.diabetesYears+' years'],
+  ];
+  if(p.bloodGroup) fields.push(['Blood Group', p.bloodGroup]);
+  if(p.hba1c) fields.push(['HbA1c', p.hba1c+'%']);
+  if(p.hasUlcer) fields.push(['Existing Foot Ulcer', p.hasUlcer]);
+  if(p.hasNeuropathy) fields.push(['Neuropathy', p.hasNeuropathy]);
+  if(p.hasFootSurgery) fields.push(['Previous Foot Surgery', p.hasFootSurgery]);
+  if(p.hospitalName) fields.push(['Hospital', p.hospitalName]);
+  if(p.doctorName) fields.push(['Doctor', p.doctorName]);
+  grid.innerHTML = fields.map(([l,v])=>`<div class="pi-item"><div class="pi-lbl">${l}</div><div class="pi-val">${v}</div></div>`).join('');
+}
+
+/* ===================== CONNECT TO DOCTOR (shared storage bridge) ===================== */
+async function connectToDoctor(type){
+  const p = patients.find(x=>x.id===selectedId);
+  const confirmBox = document.getElementById('connect-confirm');
+  const key = `appt_req:${p.id}:${Date.now()}`;
+  const payload = JSON.stringify({ patientId:p.id, name:p.name, type, ts:Date.now(), status:'pending' });
+  try{
+    if(typeof window.storage !== 'undefined'){
+      await window.storage.set(key, payload, true);
+    }
+    confirmBox.style.display = 'block';
+    confirmBox.textContent = `Sent — "${type}" is now waiting in your doctor's Appointments queue.`;
+  }catch(e){
+    confirmBox.style.display = 'block';
+    confirmBox.textContent = `Request noted, but couldn't reach the shared queue right now. Try again shortly.`;
+  }
+  pushMsg(p, 'ok', `You requested a "${type}" with your doctor.`);
+}
+
+/* ===================== HISTORY: 7-day risk, graphs, reports ===================== */
+function renderHistoryDays(p){
+  const wrap = document.getElementById('history-days');
+  if(!wrap) return;
+  // Demo: derive 7 daily risk figures by sampling the running history at 7 evenly spaced points
+  // (a real deployment would aggregate one score per calendar day from stored readings).
+  const hist = p.history.length ? p.history : [p.baseline];
+  const days = [];
+  for(let i=0;i<7;i++){
+    const idx = Math.round((i/6) * (hist.length-1));
+    const h = hist[idx];
+    const base = p.learnedBaseline || p.baseline;
+    const pDelta = Math.max(0, h.pressure - base.pressure);
+    const score = Math.max(4, Math.min(100, Math.round((pDelta/ (25*(22/bmiOf(p)))) * 100 + rand(-4,4))));
+    days.push(score);
+  }
+  const labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Today'];
+  wrap.innerHTML = days.map((s,i)=>{
+    const color = s<30?'#22C55E':s<55?'#F97316':'#DC2626';
+    return `<div class="history-day-col"><div class="history-day-bar" style="height:${Math.max(6,s)}%; background:${color};"></div><div class="history-day-lbl">${labels[i]}</div></div>`;
+  }).join('');
+}
+function renderGraph(svgId, vals, color){
+  const svg = document.getElementById(svgId);
+  if(!svg || vals.length===0) return;
+  const max = Math.max(...vals,1), min = Math.min(...vals,0);
+  const scaleY = v => 80 - ((v-min)/((max-min)||1))*70;
+  const scaleX = i => 10 + (i/((vals.length-1)||1))*280;
+  const pts = vals.map((v,i)=>`${scaleX(i)},${scaleY(v)}`).join(' ');
+  svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+function captureReport(){
+  const p = patients.find(x=>x.id===selectedId);
+  const risk = computeRisk(p);
+  const latest = p.history[p.history.length-1];
+  reports.unshift({
+    ts: Date.now(),
+    text: `Risk: ${risk.category==='calibrating'?'Learning baseline':risk.category.toUpperCase()} (${risk.score}%)\nPressure: ${latest.pressure.toFixed(1)} kPa · Temperature: ${latest.temp.toFixed(1)} °C\nSteps today: ${p.stepsToday}`
+  });
+  reports = reports.slice(0,10);
+  renderReports();
+}
+function renderReports(){
+  const list = document.getElementById('reports-list');
+  if(reports.length===0){ list.innerHTML = '<p style="font-size:12.5px;color:var(--text-mid);">No reports yet — snapshots are captured automatically as your readings change, or tap the button above.</p>'; return; }
+  list.innerHTML = reports.map(r=>`<div class="report-item"><div class="rp-top"><span>Snapshot Report</span><span style="font-weight:400; color:var(--text-mid);">${new Date(r.ts).toLocaleString()}</span></div><div class="rp-sub">${r.text}</div></div>`).join('');
+}
+
+let lastAutoReport = 0;
+function render(){
+  populateSelect();
+  const p = patients.find(x=>x.id===selectedId);
+  if(!p) return;
+  const risk = computeRisk(p);
+
+  // Top header
+  const hour = new Date().getHours();
+  const greetWord = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+  document.getElementById('greet-name').textContent = `${greetWord}, ${p.name.split(' ')[0]}`;
+  const healthScore = Math.max(4, 100 - risk.score);
+  document.getElementById('score-num').textContent = healthScore;
+  const ring = document.getElementById('score-ring-arc');
+  const circumference = 2*Math.PI*27;
+  ring.setAttribute('stroke-dasharray', circumference.toFixed(1));
+  ring.setAttribute('stroke-dashoffset', (circumference * (1 - healthScore/100)).toFixed(1));
+  ring.setAttribute('stroke', healthScore>=70?'#22C55E':healthScore>=45?'#F97316':'#DC2626');
+  document.getElementById('device-status').textContent = 'Device Connected';
+  const latest = p.history[p.history.length-1] || p.baseline;
+  const battery = latest.battery!==undefined ? latest.battery : 95;
+  document.getElementById('batt-fill').style.width = Math.round(battery)+'%';
+  document.getElementById('batt-pct').textContent = 'Battery ' + Math.round(battery) + '%';
+
+  renderPatientInfo(p, risk);
+
+  // Live readings
+  document.getElementById('lv-pressure').innerHTML = latest.pressure.toFixed(1) + '<span class="lt-unit"> kPa</span>';
+  document.getElementById('lv-temp').innerHTML = latest.temp.toFixed(1) + '<span class="lt-unit"> °C</span>';
+  document.getElementById('lv-steps').innerHTML = p.stepsToday + '<span class="lt-unit"> steps</span>';
+  document.getElementById('lv-walktime').innerHTML = Math.round(p.walkMinutes) + '<span class="lt-unit"> min</span>';
+
+  // AI Risk Card
+  const badgeClass = { calibrating:'rb-calibrating', low:'rb-low', moderate:'rb-moderate', high:'rb-high', critical:'rb-critical' }[risk.category];
+  const badgeText = { calibrating:'LEARNING', low:'LOW', moderate:'MODERATE', high:'HIGH', critical:'CRITICAL' }[risk.category];
+  document.getElementById('ai-risk-pct').textContent = risk.category==='calibrating' ? '--%' : risk.score + '%';
+  const riskBadge = document.getElementById('ai-risk-badge');
+  riskBadge.className = 'risk-badge-lg ' + badgeClass;
+  riskBadge.textContent = badgeText;
+  const recText = {
+    calibrating: "We're learning your normal pressure and temperature pattern from your first few readings. No action needed yet.",
+    low: 'Your readings are within your normal range. Keep up your usual foot care routine.',
+    moderate: 'Readings are a little higher than usual. Stay off your feet a bit more today, wear your offloading footwear, and check for redness tonight.',
+    high: 'This pattern needs clinical attention within the next day. Rest the foot as much as you can and contact your doctor.',
+    critical: 'This shows a real, current risk of a pressure sore. Please call your clinic or visit urgent care today.',
+  }[risk.category];
+  document.getElementById('ai-recommendation').textContent = recText;
+  document.getElementById('ai-last-updated').textContent = new Date().toLocaleTimeString();
+
+  // Heatmap
+  const {left, right} = computeHeatmapZones(risk, p);
+  document.getElementById('heatmap-mini').innerHTML =
+    `<div>${footSvg(left,'Left')}<div class="foot-lbl">Left</div></div><div>${footSvg(right,'Right')}<div class="foot-lbl">Right</div></div>`;
+  document.getElementById('heat-readout').innerHTML =
+    `<span>Pressure: <b>${latest.pressure.toFixed(1)} kPa</b></span><span>Temperature: <b>${latest.temp.toFixed(1)} °C</b></span>`;
+
+  document.getElementById('call-doctor-btn').href = 'tel:'; // fill in your clinic's real number here
+
+  renderMessages();
+
+  // History
+  renderHistoryDays(p);
+  const data = p.history.slice(-20);
+  renderGraph('chart-pressure-svg', data.map(h=>h.pressure), '#3B82F6');
+  renderGraph('chart-temp-svg', data.map(h=>h.temp), '#F97316');
+  renderReports();
+
+  // Auto-capture a report snapshot roughly once a minute of demo time
+  if(Date.now() - lastAutoReport > 60000 && p.history.length > CALIBRATION_READINGS){
+    lastAutoReport = Date.now();
+    captureReport();
+  }
+}
+</script>
+</body>
+</html>

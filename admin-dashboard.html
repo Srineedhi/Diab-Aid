@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Console — SmartSense FootGuard Pro</title>
+<style>
+  :root{
+    --bg-0:#0B1220; --bg-1:#0F172A; --panel:#1E293B; --panel-glass: rgba(30,41,59,0.55);
+    --border-glass: rgba(148,163,184,0.14); --blue:#3B82F6; --green:#22C55E; --orange:#F97316;
+    --red:#DC2626; --purple:#A855F7; --text-hi:#F1F5F9; --text-mid:#94A3B8; --text-low:#64748B;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter',system-ui,-apple-system,sans-serif; background: radial-gradient(circle at 20% 0%, #14213d, var(--bg-0) 60%);
+    color: var(--text-hi); min-height:100vh; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:24px; }
+
+  /* Login / register */
+  #login-screen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .login-card{ width:100%; max-width:380px; background: var(--panel-glass); border:1px solid var(--border-glass); border-radius:18px;
+    padding: 36px 32px; backdrop-filter: blur(20px); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+  .login-card h2{ font-size:20px; margin-bottom:4px; }
+  .login-card p.hint{ color:var(--text-mid); font-size:13px; margin-bottom:24px; }
+  .brand{ display:flex; align-items:center; gap:10px; margin-bottom:24px; }
+  .brand-icon{ width:36px; height:36px; border-radius:11px; background:linear-gradient(135deg,var(--blue),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:17px; }
+  .brand-name{ font-weight:700; font-size:15px; }
+  .brand-sub{ font-size:11px; color:var(--text-mid); }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12px; color:var(--text-mid); margin-bottom:6px; }
+  .field input{ width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--border-glass);
+    background: rgba(15,23,42,0.6); color:var(--text-hi); font-size:14px; outline:none; }
+  .field input:focus{ border-color: var(--blue); }
+  .btn-primary{ width:100%; padding:12px; border:none; border-radius:10px; background: linear-gradient(90deg, var(--blue), #2563EB);
+    color:white; font-weight:600; font-size:14px; cursor:pointer; }
+  .link-btn{ background:none; border:none; color:var(--blue); font-size:12.5px; cursor:pointer; padding:0; text-decoration:underline; }
+  .switch-line{ text-align:center; margin-top:16px; font-size:12.5px; color:var(--text-mid); }
+  .err-box{ display:none; margin:4px 0 14px; padding:10px 12px; border-radius:10px; background:rgba(220,38,38,0.1); border:1px solid rgba(220,38,38,0.3); font-size:12px; color:#FCA5A5; }
+  .demo-note{ margin-top:20px; padding:12px 14px; border-radius:10px; background: rgba(59,130,246,0.08); border:1px dashed rgba(59,130,246,0.35); font-size:12px; color:var(--text-mid); line-height:1.6; }
+
+  /* Dashboard */
+  #app-screen{ display:none; }
+  .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+  .stat-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:22px; }
+  @media (max-width:640px){ .stat-row{ grid-template-columns:1fr; } }
+  .stat-card{ background:var(--panel-glass); border:1px solid var(--border-glass); border-radius:16px; padding:18px 20px; }
+  .stat-card .num{ font-size:26px; font-weight:800; }
+  .stat-card .lbl{ font-size:12px; color:var(--text-mid); margin-top:4px; }
+  .card{ background: var(--panel-glass); border:1px solid var(--border-glass); border-radius:18px; padding:20px; margin-bottom:18px; }
+  .card h3{ font-size:13px; margin:0 0 14px; color:var(--text-mid); font-weight:600; text-transform:uppercase; letter-spacing:0.03em; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th{ text-align:left; color:var(--text-mid); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.03em; padding:8px 10px; border-bottom:1px solid var(--border-glass); }
+  td{ padding:10px; border-bottom:1px solid rgba(148,163,184,0.08); }
+  tr:last-child td{ border-bottom:none; }
+  .empty-note{ font-size:12.5px; color:var(--text-mid); padding:14px 0; }
+  .logout-btn{ background:rgba(220,38,38,0.12); border:1px solid rgba(220,38,38,0.35); color:#FCA5A5; padding:9px 16px; border-radius:10px; cursor:pointer; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN / REGISTER ===================== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="brand"><div class="brand-icon">🗂️</div><div><div class="brand-name">Admin Console</div><div class="brand-sub">SmartSense FootGuard Pro</div></div></div>
+    <h2 id="auth-title">Admin sign in</h2>
+    <p class="hint" id="auth-hint">Manage patients, doctors, and hospital records</p>
+
+    <div id="signin-fields">
+      <div class="field"><label>Email</label><input id="login-email" type="email" placeholder="admin@hospital.com"></div>
+      <div class="field"><label>Password</label><input id="login-password" type="password" placeholder="••••••••"></div>
+      <div class="err-box" id="login-error"></div>
+      <button class="btn-primary" onclick="doLogin()">Sign In</button>
+      <div class="switch-line">First time here? <button class="link-btn" onclick="toggleAuthMode(true)">Register as admin</button></div>
+    </div>
+
+    <div id="register-fields" style="display:none;">
+      <div class="field"><label>Full Name</label><input id="reg-name" type="text" placeholder="e.g. Priya Menon"></div>
+      <div class="field"><label>Organization / Hospital Network</label><input id="reg-org" type="text" placeholder="e.g. Apollo Group"></div>
+      <div class="field"><label>Email</label><input id="reg-email" type="email" placeholder="admin@hospital.com"></div>
+      <div class="field"><label>Password</label><input id="reg-password" type="password" placeholder="Create a password"></div>
+      <div class="err-box" id="reg-error"></div>
+      <button class="btn-primary" onclick="submitAdminRegistration()">Save &amp; Continue</button>
+      <div class="switch-line">Already registered? <button class="link-btn" onclick="toggleAuthMode(false)">Sign in instead</button></div>
+    </div>
+
+    <div class="switch-line">Not an admin? <a href="patient-dashboard.html#patient" style="color:var(--blue);">Patient</a> · <a href="footguard-dashboard.html" style="color:var(--blue);">Doctor</a> portal</div>
+    <div class="switch-line"><a href="index.html" style="color:var(--blue);">← Back to Diab-Aid Home</a></div>
+    <div class="demo-note">Admin accounts are real Supabase Auth users (role stored in the "users" table). Add your project URL/anon key to supabase-config.js to enable sign-in — until then this screen will show a configuration notice.</div>
+  </div>
+</div>
+
+<!-- ===================== DASHBOARD ===================== -->
+<div id="app-screen">
+  <div class="wrap">
+    <div class="top">
+      <div class="brand"><div class="brand-icon">🗂️</div><div><div class="brand-name">Admin Console</div><div class="brand-sub">SmartSense FootGuard Pro</div></div></div>
+      <button class="logout-btn" onclick="doLogout()">Sign out</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="num" id="stat-patients">–</div><div class="lbl">Registered Patients</div></div>
+      <div class="stat-card"><div class="num" id="stat-doctors">–</div><div class="lbl">Registered Doctors</div></div>
+      <div class="stat-card"><div class="num" id="stat-escalated">–</div><div class="lbl">Patients Flagged High-Risk</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Patients</h3>
+      <div id="patients-table"><p class="empty-note">Loading…</p></div>
+    </div>
+    <div class="card">
+      <h3>Doctors</h3>
+      <div id="doctors-table"><p class="empty-note">Loading…</p></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+/* ===================== SUPABASE SETUP =====================
+   The actual project URL / anon key live in supabase-config.js (loaded above, shared by every
+   page in this site) — edit that ONE file to connect this whole app to your Supabase project.
+   Tables used here (see supabase-config.js comment block for the full schema):
+     users  (id uuid PK = auth.users.id, role text, name text, email text, created_at timestamptz)
+     admins (id uuid PK = auth.users.id, name text, organization text, created_at timestamptz)      */
+const supabaseClient = window.supabaseClient || null;
+if(!supabaseClient){ console.warn('Supabase not initialized — check supabase-config.js.'); }
+
+function toggleAuthMode(showRegister){
+  document.getElementById('signin-fields').style.display = showRegister ? 'none' : 'block';
+  document.getElementById('register-fields').style.display = showRegister ? 'block' : 'none';
+  document.getElementById('auth-title').textContent = showRegister ? 'Register as admin' : 'Admin sign in';
+  document.getElementById('auth-hint').textContent = showRegister ? 'Asked once, to create your admin account' : 'Manage patients, doctors, and hospital records';
+}
+
+async function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errBox = document.getElementById('login-error');
+  errBox.style.display = 'none';
+  if(!supabaseClient){
+    errBox.textContent = 'Supabase isn\'t configured yet — add your project URL/anon key in supabase-config.js.';
+    errBox.style.display = 'block';
+    return;
+  }
+  try{
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if(signInError) throw signInError;
+    const uid = signInData.user.id;
+    const { data: userRow, error: userErr } = await supabaseClient.from('users').select('*').eq('id', uid).single();
+    if(userErr || !userRow || userRow.role !== 'admin'){
+      await supabaseClient.auth.signOut();
+      errBox.textContent = 'This account isn\'t registered as an admin — pick the right portal below.';
+      errBox.style.display = 'block';
+      return;
+    }
+    enterApp();
+  }catch(e){
+    errBox.textContent = 'Sign-in failed: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+async function submitAdminRegistration(){
+  const name = document.getElementById('reg-name').value.trim();
+  const org = document.getElementById('reg-org').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const errBox = document.getElementById('reg-error');
+  errBox.style.display = 'none';
+  if(!name || !org || !email || !password){
+    errBox.textContent = 'Please fill in every field.'; errBox.style.display = 'block'; return;
+  }
+  if(!supabaseClient){
+    errBox.textContent = 'Supabase isn\'t configured yet — add your project URL/anon key in supabase-config.js.';
+    errBox.style.display = 'block';
+    return;
+  }
+  try{
+    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({ email, password });
+    if(signUpError) throw signUpError;
+    const uid = signUpData.user.id;
+    const nowIso = new Date().toISOString();
+    await supabaseClient.from('users').upsert({ id: uid, role:'admin', name, email, created_at: nowIso });
+    await supabaseClient.from('admins').upsert({ id: uid, name, organization: org, created_at: nowIso });
+    enterApp();
+  }catch(e){
+    errBox.textContent = 'Registration failed: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+function doLogout(){
+  if(supabaseClient) supabaseClient.auth.signOut();
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function enterApp(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  loadPatients();
+  loadDoctors();
+}
+
+async function loadPatients(){
+  const box = document.getElementById('patients-table');
+  if(!supabaseClient){ box.innerHTML = '<p class="empty-note">Supabase not configured.</p>'; return; }
+  try{
+    const { data: rows, error } = await supabaseClient.from('patients').select('*');
+    if(error) throw error;
+    let escalated = 0;
+    if(!rows || rows.length===0){ box.innerHTML = '<p class="empty-note">No patients registered yet.</p>'; }
+    else{
+      const trs = rows.map(d=>{
+        // jsonb columns on the patients table (Postgres convention: snake_case)
+        const pd = d.personal_details || {}, md = d.medical_details || {}, dd = d.doctor_details || {};
+        const flagged = md.existingFootUlcer === 'Yes' || md.neuropathy === 'Yes';
+        if(flagged) escalated++;
+        return `<tr><td>${pd.fullName||'—'}</td><td>${pd.age||'—'}</td><td>${pd.gender||'—'}</td><td>${md.diabetesType||'—'}</td><td>${dd.hospitalName||'—'}</td><td>${dd.doctorName||'—'}</td><td>${flagged?'⚠️ High Risk':'Normal'}</td></tr>`;
+      }).join('');
+      box.innerHTML = `<table><thead><tr><th>Name</th><th>Age</th><th>Gender</th><th>Diabetes Type</th><th>Hospital</th><th>Doctor</th><th>Status</th></tr></thead><tbody>${trs}</tbody></table>`;
+    }
+    document.getElementById('stat-patients').textContent = rows ? rows.length : 0;
+    document.getElementById('stat-escalated').textContent = escalated;
+  }catch(e){
+    box.innerHTML = `<p class="empty-note">Couldn't load patients: ${e.message}</p>`;
+  }
+}
+
+async function loadDoctors(){
+  const box = document.getElementById('doctors-table');
+  if(!supabaseClient){ box.innerHTML = '<p class="empty-note">Supabase not configured.</p>'; return; }
+  try{
+    const { data: rows, error } = await supabaseClient.from('doctors').select('*');
+    if(error) throw error;
+    if(!rows || rows.length===0){ box.innerHTML = '<p class="empty-note">No doctors registered yet.</p>'; }
+    else{
+      const trs = rows.map(d=>`<tr><td>${d.name||'—'}</td><td>${d.hospital||'—'}</td><td>${d.specialization||'—'}</td><td>${d.phone||'—'}</td></tr>`).join('');
+      box.innerHTML = `<table><thead><tr><th>Name</th><th>Hospital</th><th>Specialization</th><th>Phone</th></tr></thead><tbody>${trs}</tbody></table>`;
+    }
+    document.getElementById('stat-doctors').textContent = rows ? rows.length : 0;
+  }catch(e){
+    box.innerHTML = `<p class="empty-note">Couldn't load doctors: ${e.message}</p>`;
+  }
+}
+</script>
+</body>
+</html>

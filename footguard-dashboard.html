@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartSense FootGuard Pro</title>
+<style>
+  :root{
+    --bg-0:#0B1220; --bg-1:#0F172A; --bg-2:#111827;
+    --panel:#1E293B; --panel-glass: rgba(30,41,59,0.55);
+    --border-glass: rgba(148,163,184,0.14);
+    --blue:#3B82F6; --green:#22C55E; --orange:#F97316; --red:#DC2626; --purple:#A855F7;
+    --text-hi:#F1F5F9; --text-mid:#94A3B8; --text-low:#64748B;
+    --radius:18px;
+  }
+  body.light{
+    --bg-0:#F1F5F9; --bg-1:#F8FAFC; --bg-2:#FFFFFF;
+    --panel:#FFFFFF; --panel-glass: rgba(255,255,255,0.7);
+    --border-glass: rgba(15,23,42,0.1);
+    --text-hi:#0F172A; --text-mid:#475569; --text-low:#94A3B8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(59,130,246,0.12), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(168,85,247,0.10), transparent 55%),
+      var(--bg-0);
+    color: var(--text-hi); min-height:100vh; overflow-x:hidden;
+    transition: background .3s, color .3s;
+  }
+  ::selection{ background: rgba(59,130,246,0.35); }
+
+  #login-screen{ min-height:100vh; display:grid; grid-template-columns: 1.1fr 0.9fr; }
+  @media (max-width: 900px){ #login-screen{ grid-template-columns: 1fr; } }
+  .login-left{ position:relative; display:flex; flex-direction:column; justify-content:center; padding: 6vw; overflow:hidden;
+    background: linear-gradient(160deg, rgba(59,130,246,0.25), rgba(15,23,42,0) 55%), linear-gradient(180deg, var(--bg-1), var(--bg-0)); }
+  .login-left::before{ content:""; position:absolute; inset:-20%;
+    background: radial-gradient(600px 600px at 30% 30%, rgba(59,130,246,0.18), transparent 60%);
+    animation: drift 14s ease-in-out infinite alternate; }
+  @keyframes drift{ from{ transform: translate(-3%, -2%) scale(1); } to{ transform: translate(3%, 4%) scale(1.08); } }
+  .brand-mark{ position:relative; z-index:1; display:flex; align-items:center; gap:12px; margin-bottom:48px; }
+  .brand-icon{ width:42px; height:42px; border-radius:12px; background: linear-gradient(135deg, var(--blue), var(--purple));
+    display:flex; align-items:center; justify-content:center; box-shadow: 0 8px 24px rgba(59,130,246,0.35); }
+  .brand-name{ font-weight:700; font-size:18px; letter-spacing:-0.01em; }
+  .brand-sub{ font-size:12px; color:var(--text-mid); }
+  .login-headline{ position:relative; z-index:1; font-size: clamp(32px, 4vw, 52px); font-weight: 700; line-height:1.08; letter-spacing:-0.02em; max-width:560px; }
+  .login-headline span{ background: linear-gradient(90deg, var(--blue), #60A5FA 40%, var(--purple)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .login-desc{ position:relative; z-index:1; margin-top:20px; color:var(--text-mid); max-width:460px; font-size:15px; line-height:1.6; }
+  .login-stats{ position:relative; z-index:1; display:flex; gap:32px; margin-top:56px; }
+  .login-stat b{ font-size:22px; display:block; }
+  .login-stat span{ font-size:12px; color:var(--text-mid); }
+  .login-right{ display:flex; align-items:center; justify-content:center; padding:6vw; background: var(--bg-1); border-left:1px solid var(--border-glass); }
+  .login-card{ width:100%; max-width:380px; background: var(--panel-glass); border:1px solid var(--border-glass); border-radius: var(--radius);
+    padding: 36px 32px; backdrop-filter: blur(20px); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+  .login-card h2{ font-size:20px; margin-bottom:4px; }
+  .login-card p.hint{ color:var(--text-mid); font-size:13px; margin-bottom:28px; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12px; color:var(--text-mid); margin-bottom:6px; }
+  .field input{ width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--border-glass);
+    background: rgba(15,23,42,0.06); color:var(--text-hi); font-size:14px; outline:none; transition: border-color .2s; }
+  body:not(.light) .field input{ background: rgba(15,23,42,0.6); }
+  .field input:focus{ border-color: var(--blue); }
+  .row-between{ display:flex; justify-content:space-between; align-items:center; margin: 14px 0 22px; font-size:12px; color:var(--text-mid); }
+  .row-between label{ display:flex; align-items:center; gap:6px; }
+  .btn-primary{ width:100%; padding:12px; border:none; border-radius:10px; background: linear-gradient(90deg, var(--blue), #2563EB);
+    color:white; font-weight:600; font-size:14px; cursor:pointer; transition: transform .15s, box-shadow .15s; }
+  .btn-primary:hover{ transform: translateY(-1px); box-shadow:0 10px 24px rgba(59,130,246,0.35); }
+  .demo-creds{ margin-top:20px; padding:12px 14px; border-radius:10px; background: rgba(59,130,246,0.08); border:1px dashed rgba(59,130,246,0.35);
+    font-size:12px; color:var(--text-mid); line-height:1.7; }
+  .demo-creds b{ color:var(--text-hi); }
+
+  #app-screen{ display:none; min-height:100vh; grid-template-columns: 232px 1fr; }
+  #app-screen.active{ display:grid; }
+  .sidebar{ background: var(--bg-2); border-right:1px solid var(--border-glass); padding: 20px 14px; display:flex; flex-direction:column; }
+  .sidebar .brand-mark{ margin-bottom:28px; padding-left:6px; }
+  .nav-item{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; color:var(--text-mid);
+    font-size:13.5px; font-weight:500; cursor:pointer; margin-bottom:2px; transition: background .15s, color .15s; position:relative; }
+  .nav-item .dot{ width:6px; height:6px; border-radius:50%; background:currentColor; opacity:0; }
+  .nav-item:hover{ background: rgba(148,163,184,0.08); color:var(--text-hi); }
+  .nav-item.active{ background: rgba(59,130,246,0.14); color: var(--blue); }
+  .nav-item.active .dot{ opacity:1; }
+  .nav-badge{ margin-left:auto; background:var(--red); color:white; font-size:10px; font-weight:700; border-radius:999px; padding:1px 7px; }
+  .nav-section-label{ font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-low); margin: 18px 0 8px 12px; }
+  .sidebar .logout{ margin-top:auto; }
+
+  .main-col{ display:flex; flex-direction:column; min-height:100vh; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding: 14px 28px; border-bottom:1px solid var(--border-glass);
+    background: rgba(15,23,42,0.5); backdrop-filter: blur(12px); position:sticky; top:0; z-index:5; }
+  body.light .topbar{ background: rgba(255,255,255,0.7); }
+  .search-box{ display:flex; align-items:center; gap:8px; background: rgba(30,41,59,0.6); border:1px solid var(--border-glass);
+    border-radius:10px; padding:8px 14px; width:280px; color:var(--text-mid); font-size:13px; }
+  body.light .search-box{ background: rgba(15,23,42,0.04); }
+  .topbar-right{ display:flex; align-items:center; gap:18px; }
+  .live-pill{ display:flex; align-items:center; gap:7px; font-size:12px; color:var(--green); background: rgba(34,197,94,0.1);
+    border:1px solid rgba(34,197,94,0.3); padding:6px 12px; border-radius:999px; }
+  .pulse{ width:7px; height:7px; border-radius:50%; background:var(--green); animation: pulse 1.8s infinite; }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(34,197,94,0.5); } 70%{ box-shadow:0 0 0 8px rgba(34,197,94,0); } 100%{ box-shadow:0 0 0 0 rgba(34,197,94,0); } }
+  .bell{ position:relative; color:var(--text-mid); cursor:pointer; }
+  .bell .badge{ position:absolute; top:-6px; right:-8px; background:var(--red); color:white; font-size:9px; width:16px; height:16px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .avatar{ width:34px; height:34px; border-radius:50%; background: linear-gradient(135deg, var(--blue), var(--purple));
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; }
+
+  .content{ padding: 26px 28px 60px; }
+  .view{ display:none; }
+  .view.active{ display:block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn{ from{ opacity:0; transform: translateY(4px);} to{opacity:1; transform:none;} }
+  .greeting h1{ font-size:22px; font-weight:700; letter-spacing:-0.01em; }
+  .greeting p{ color:var(--text-mid); font-size:13.5px; margin-top:4px; }
+
+  .stat-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:16px; margin: 22px 0 26px; }
+  @media (max-width: 1200px){ .stat-grid{ grid-template-columns: repeat(2,1fr); } }
+  .glass-card{ background: var(--panel-glass); border:1px solid var(--border-glass); border-radius: var(--radius); padding:18px;
+    backdrop-filter: blur(14px); transition: transform .2s, border-color .2s; }
+  .glass-card:hover{ transform: translateY(-2px); border-color: rgba(148,163,184,0.28); }
+  .stat-card .stat-top{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .stat-icon{ width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .stat-card .val{ font-size:26px; font-weight:700; margin-top:14px; }
+  .stat-card .lbl{ font-size:12px; color:var(--text-mid); margin-top:2px; }
+
+  .grid-2col{ display:grid; grid-template-columns: 1.3fr 1fr; gap:18px; margin-bottom:18px; }
+  @media (max-width: 1100px){ .grid-2col{ grid-template-columns:1fr; } }
+  .panel-title{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .panel-title h3{ font-size:15px; font-weight:600; }
+  .panel-title .meta{ font-size:11px; color:var(--text-mid); }
+
+  .patient-strip{ display:flex; gap:10px; margin-bottom:18px; overflow-x:auto; padding-bottom:4px; }
+  .patient-chip{ flex:0 0 auto; display:flex; align-items:center; gap:10px; background: var(--panel-glass); border:1px solid var(--border-glass);
+    border-radius:14px; padding:10px 16px; cursor:pointer; transition: border-color .2s; }
+  .patient-chip.selected{ border-color: var(--blue); background: rgba(59,130,246,0.1); }
+  .patient-chip .pname{ font-size:13px; font-weight:600; }
+  .patient-chip .pmeta{ font-size:11px; color:var(--text-mid); }
+  .risk-badge{ font-size:10px; font-weight:700; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap; }
+  .risk-low{ background: rgba(34,197,94,0.15); color:#22C55E; }
+  .risk-moderate{ background: rgba(249,115,22,0.15); color:#F97316; }
+  .risk-high{ background: rgba(220,38,38,0.15); color:#F87171; }
+  .risk-critical{ background: rgba(220,38,38,0.25); color:#FCA5A5; animation: blinkText 1.2s infinite; }
+  .risk-calibrating{ background: rgba(59,130,246,0.15); color:#60A5FA; }
+  @keyframes blinkText{ 50%{ opacity:0.45; } }
+
+  .sensor-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:12px; }
+  .patient-info-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:14px; }
+  @media (max-width: 900px){ .patient-info-grid{ grid-template-columns: repeat(2,1fr); } }
+  .pi-item{ background: rgba(15,23,42,0.06); border:1px solid var(--border-glass); border-radius:12px; padding:10px 14px; }
+  body:not(.light) .pi-item{ background: rgba(15,23,42,0.4); }
+  .pi-item .pi-lbl{ font-size:10.5px; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.03em; }
+  .pi-item .pi-val{ font-size:14px; font-weight:700; margin-top:4px; }
+  .sensor-tile{ background: rgba(15,23,42,0.06); border:1px solid var(--border-glass); border-radius:14px; padding:14px; }
+  body:not(.light) .sensor-tile{ background: rgba(15,23,42,0.55); }
+  .sensor-tile .s-lbl{ font-size:11px; color:var(--text-mid); }
+  .sensor-tile .s-val{ font-size:20px; font-weight:700; margin-top:6px; }
+  .sensor-tile .s-unit{ font-size:11px; color:var(--text-mid); font-weight:400; }
+
+  .trend-interval-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
+  @media (max-width: 1100px){ .trend-interval-grid{ grid-template-columns: 1fr; } }
+  .heatmap-wrap{ display:flex; gap:28px; justify-content:center; align-items:center; padding:10px 0; }
+  .foot-label{ text-align:center; font-size:11px; color:var(--text-mid); margin-top:6px; }
+  .zone{ transition: fill .6s ease, filter .3s; cursor:pointer; }
+  .zone.critical{ animation: zoneBlink 1s infinite; }
+  @keyframes zoneBlink{ 50%{ opacity:0.55; } }
+  .heat-legend{ display:flex; gap:14px; justify-content:center; margin-top:10px; font-size:11px; color:var(--text-mid); }
+  .heat-legend span{ display:flex; align-items:center; gap:5px; }
+  .heat-legend i{ width:9px; height:9px; border-radius:2px; display:inline-block; }
+
+  .risk-score-ring{ display:flex; align-items:center; gap:20px; }
+  .risk-num{ font-size:38px; font-weight:800; }
+  .risk-explain{ font-size:12.5px; color:var(--text-mid); line-height:1.6; margin-top:10px; }
+  .risk-meta-row{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-mid); margin-top:14px; padding-top:14px; border-top:1px solid var(--border-glass); }
+  .risk-meta-row b{ color:var(--text-hi); display:block; font-size:14px; }
+
+  .chart-wrap{ position:relative; height:150px; }
+
+  .ai-panel{ background: linear-gradient(160deg, rgba(168,85,247,0.08), rgba(59,130,246,0.05)); border:1px solid rgba(168,85,247,0.25); }
+  .ai-header{ display:flex; align-items:center; gap:10px; }
+  .ai-badge{ width:30px; height:30px; border-radius:9px; background: linear-gradient(135deg, var(--purple), var(--blue)); display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .ai-btn{ margin-top:14px; padding:10px 16px; border-radius:10px; border:1px solid rgba(168,85,247,0.4); background: rgba(168,85,247,0.12);
+    color:var(--text-hi); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; transition: background .2s; }
+  .ai-btn:hover{ background: rgba(168,85,247,0.22); }
+  .ai-btn:disabled{ opacity:0.6; cursor:default; }
+  .ai-output{ margin-top:16px; font-size:13px; line-height:1.7; color:var(--text-mid); white-space:pre-wrap; min-height:20px; }
+  .cursor{ display:inline-block; width:6px; height:14px; background:var(--purple); animation: blinkText 0.8s infinite; vertical-align:middle; margin-left:2px; }
+
+  .alert-item{ display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-radius:12px; margin-bottom:8px;
+    background: rgba(15,23,42,0.06); border:1px solid var(--border-glass); gap:10px; flex-wrap:wrap; }
+  body:not(.light) .alert-item{ background: rgba(15,23,42,0.5); }
+  .alert-item.critical{ border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.08); }
+  .alert-left{ display:flex; align-items:center; gap:12px; }
+  .alert-dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .alert-name{ font-size:13px; font-weight:600; }
+  .alert-sub{ font-size:11px; color:var(--text-mid); }
+  .alert-time{ font-size:11px; color:var(--text-low); }
+  .mini-btn{ font-size:11px; padding:5px 10px; border-radius:7px; border:1px solid var(--border-glass); background:transparent; color:var(--text-mid); cursor:pointer; }
+  .mini-btn:hover{ color:var(--text-hi); border-color:var(--blue); }
+
+  /* Patients grid */
+  .patients-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:16px; }
+  .patient-card{ position:relative; }
+  .patient-card .pc-top{ display:flex; gap:12px; align-items:center; }
+  .patient-card .pc-name{ font-size:14px; font-weight:700; }
+  .patient-card .pc-meta{ font-size:11.5px; color:var(--text-mid); }
+  .patient-card .pc-row{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-mid); margin-top:12px; padding-top:12px; border-top:1px solid var(--border-glass); }
+  .patient-card .pc-actions{ display:flex; gap:8px; margin-top:12px; }
+  .fab{ position:fixed; bottom:28px; right:34px; width:52px; height:52px; border-radius:50%; background: linear-gradient(135deg, var(--blue), var(--purple));
+    color:white; font-size:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 12px 30px rgba(59,130,246,0.4); border:none; z-index:20; }
+
+  /* Settings */
+  .settings-block{ margin-bottom:26px; }
+  .settings-block h4{ font-size:13px; margin-bottom:14px; color:var(--text-hi); }
+  .slider-row{ margin-bottom:16px; }
+  .slider-row .sr-top{ display:flex; justify-content:space-between; font-size:12px; color:var(--text-mid); margin-bottom:6px; }
+  .slider-row .sr-top b{ color:var(--text-hi); }
+  input[type=range]{ width:100%; accent-color: var(--blue); }
+  .toggle-row{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-glass); }
+  .toggle-row:last-child{ border-bottom:none; }
+  .toggle-row .tr-lbl{ font-size:13px; }
+  .toggle-row .tr-sub{ font-size:11px; color:var(--text-mid); margin-top:2px; }
+  .switch{ position:relative; width:42px; height:24px; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .switch .slider-el{ position:absolute; inset:0; background: rgba(148,163,184,0.25); border-radius:999px; cursor:pointer; transition:.2s; }
+  .switch .slider-el::before{ content:""; position:absolute; width:18px; height:18px; left:3px; top:3px; background:white; border-radius:50%; transition:.2s; }
+  .switch input:checked + .slider-el{ background: var(--blue); }
+  .switch input:checked + .slider-el::before{ transform: translateX(18px); }
+  .seg-control{ display:flex; gap:8px; }
+  .seg-btn{ padding:8px 16px; border-radius:9px; border:1px solid var(--border-glass); background:transparent; color:var(--text-mid); font-size:12.5px; cursor:pointer; }
+  .seg-btn.active{ background: rgba(59,130,246,0.15); border-color: var(--blue); color:var(--blue); font-weight:600; }
+
+  /* Messages */
+  .msg-item{ display:flex; gap:12px; padding:14px; border-radius:14px; background: rgba(15,23,42,0.06); border:1px solid var(--border-glass); margin-bottom:10px; }
+  body:not(.light) .msg-item{ background: rgba(15,23,42,0.5); }
+  .msg-item.urgent{ border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.06); }
+  .msg-item.advice{ border-color: rgba(249,115,22,0.35); background: rgba(249,115,22,0.05); }
+  .msg-icon{ width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .msg-body .msg-top{ display:flex; justify-content:space-between; gap:10px; }
+  .msg-name{ font-size:13px; font-weight:700; }
+  .msg-channel{ font-size:10px; color:var(--text-mid); background:rgba(148,163,184,0.12); padding:2px 8px; border-radius:999px; }
+  .msg-text{ font-size:12.5px; color:var(--text-mid); margin-top:4px; line-height:1.6; }
+  .msg-time{ font-size:10.5px; color:var(--text-low); margin-top:6px; }
+  .msg-status{ font-size:10px; color:var(--green); margin-top:4px; }
+
+  /* Toast */
+  #toast-container{ position:fixed; top:20px; right:20px; z-index:100; display:flex; flex-direction:column; gap:10px; }
+  .toast{ width:320px; background: var(--panel); border:1px solid var(--border-glass); border-radius:14px; padding:14px 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4); animation: slideIn .3s ease; }
+  .toast.urgent{ border-color: rgba(220,38,38,0.5); }
+  @keyframes slideIn{ from{ transform: translateX(40px); opacity:0; } to{ transform:none; opacity:1; } }
+  .toast .t-top{ display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; }
+  .toast .t-body{ font-size:11.5px; color:var(--text-mid); margin-top:6px; line-height:1.5; }
+
+  /* Analytics */
+  .analytics-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+  @media (max-width: 1100px){ .analytics-grid{ grid-template-columns:1fr; } }
+  .legend-row{ display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; font-size:11.5px; color:var(--text-mid); }
+  .legend-row span{ display:flex; align-items:center; gap:6px; }
+  .legend-row i{ width:9px; height:9px; border-radius:2px; }
+  .bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .bar-row .bar-lbl{ width:78px; font-size:11.5px; color:var(--text-mid); flex-shrink:0; }
+  .bar-track{ flex:1; height:10px; border-radius:6px; background: rgba(148,163,184,0.12); overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:6px; transition: width .6s ease; }
+  .bar-val{ width:56px; text-align:right; font-size:11.5px; color:var(--text-hi); flex-shrink:0; }
+
+  .placeholder-panel{ text-align:center; padding:60px 20px; color:var(--text-mid); }
+  .placeholder-panel .ph-icon{ font-size:34px; margin-bottom:14px; }
+  .placeholder-panel h3{ color:var(--text-hi); font-size:16px; margin-bottom:6px; }
+  .placeholder-panel p{ font-size:12.5px; max-width:380px; margin:0 auto; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-left">
+    <div class="brand-mark">
+      <div class="brand-icon">🩺</div>
+      <div><div class="brand-name">SmartSense FootGuard Pro</div><div class="brand-sub">AI-Powered Diabetic Foot Monitoring</div></div>
+    </div>
+    <h1 class="login-headline">Monitor Every Step.<br><span>Prevent Every Ulcer.</span></h1>
+    <p class="login-desc">Real-time pressure and temperature sensing, combined with clinical risk modeling, to catch diabetic foot ulcers before they form.</p>
+    <div class="login-stats">
+      <div class="login-stat"><b>2,400+</b><span>Readings / day</span></div>
+      <div class="login-stat"><b>4</b><span>Active Patients</span></div>
+      <div class="login-stat"><b>98.2%</b><span>Sensor Uptime</span></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h2>Welcome back</h2>
+      <p class="hint">Sign in to access your monitoring dashboard</p>
+      <div class="field"><label>Email</label><input id="email" type="email" value="doctor@diabhelp.ai"></div>
+      <div class="field"><label>Password</label><input id="password" type="password" value="Doctor@123"></div>
+      <div class="row-between">
+        <label><input type="checkbox" checked style="accent-color:#3B82F6"> Remember me</label>
+        <span style="cursor:pointer; color:#60A5FA;">Forgot password?</span>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Sign In</button>
+      <div id="login-error" style="display:none; margin-top:12px; padding:10px 12px; border-radius:10px; background:rgba(220,38,38,0.1); border:1px solid rgba(220,38,38,0.3); font-size:12px; color:#FCA5A5;"></div>
+      <div class="switch-line" style="text-align:center; margin-top:16px; font-size:12.5px; color:var(--text-mid);">First time here? <button class="link-btn" style="background:none;border:none;color:#60A5FA;font-size:12.5px;cursor:pointer;padding:0;text-decoration:underline;" onclick="showDoctorRegister()">Register as a doctor</button></div>
+      <div class="switch-line" style="text-align:center; margin-top:6px; font-size:12.5px; color:var(--text-mid);">Not a doctor? <a href="patient-dashboard.html#patient" style="color:#60A5FA;">Patient</a> · <a href="admin-dashboard.html" style="color:#60A5FA;">Admin</a> portal</div>
+      <div class="switch-line" style="text-align:center; margin-top:6px; font-size:12.5px; color:var(--text-mid);"><a href="index.html" style="color:#60A5FA;">← Back to Diab-Aid Home</a></div>
+      <div class="demo-creds"><b>Demo credentials</b><br>doctor@diabhelp.ai · Doctor@123</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DOCTOR REGISTRATION POPUP ===================== -->
+<div id="doctor-register-screen" style="display:none; position:fixed; inset:0; background:rgba(4,8,16,0.72); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:200; padding:24px;">
+  <div style="width:100%; max-width:420px; max-height:88vh; overflow-y:auto; background:var(--panel); border:1px solid var(--border-glass); border-radius:18px; box-shadow:0 24px 60px rgba(0,0,0,0.5); padding:28px;">
+    <h2 style="font-size:19px; margin:0 0 4px;">Register as a doctor</h2>
+    <p class="hint" style="margin-bottom:22px;">Asked once — used to identify you and link your patients</p>
+    <div class="field"><label>Full Name</label><input id="dr-name" type="text" placeholder="e.g. Dr. Anitha Rao"></div>
+    <div class="field"><label>Hospital Name</label><input id="dr-hospital" type="text" placeholder="e.g. Apollo Hospitals"></div>
+    <div class="field"><label>Specialization</label><input id="dr-specialization" type="text" placeholder="e.g. Endocrinology"></div>
+    <div class="field"><label>Phone Number</label><input id="dr-phone" type="tel" placeholder="e.g. 98765 43210"></div>
+    <div class="field"><label>Email</label><input id="dr-email" type="email" placeholder="you@hospital.com"></div>
+    <div class="field"><label>Password</label><input id="dr-password" type="password" placeholder="Create a password"></div>
+    <div id="dr-error" style="display:none; margin:4px 0 12px; padding:10px 12px; border-radius:10px; background:rgba(220,38,38,0.1); border:1px solid rgba(220,38,38,0.3); font-size:12px; color:#FCA5A5;"></div>
+    <button class="btn-primary" onclick="submitDoctorRegistration()">Save &amp; Continue</button>
+    <div class="switch-line" style="text-align:center; margin-top:14px; font-size:12.5px; color:var(--text-mid);"><button class="link-btn" style="background:none;border:none;color:#60A5FA;font-size:12.5px;cursor:pointer;padding:0;text-decoration:underline;" onclick="document.getElementById('doctor-register-screen').style.display='none';">Already registered? Sign in instead</button></div>
+  </div>
+</div>
+
+<div id="app-screen">
+  <div class="sidebar">
+    <div class="brand-mark">
+      <div class="brand-icon" style="width:34px;height:34px;font-size:14px;">🩺</div>
+      <div class="brand-name" style="font-size:14px;">FootGuard Pro</div>
+    </div>
+    <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')"><span class="dot"></span>📊 <span data-i18n="nav_dashboard">Dashboard</span></div>
+    <div class="nav-item" data-view="patients" onclick="switchView('patients')"><span class="dot"></span>👥 <span data-i18n="nav_patients">Patients</span></div>
+    <div class="nav-item" data-view="live" onclick="switchView('live')"><span class="dot"></span>📡 Live Monitoring</div>
+    
+    <div class="nav-item" data-view="heatmap" onclick="switchView('heatmap')"><span class="dot"></span>🦶 Heatmap</div>
+    <div class="nav-item" data-view="trends" onclick="switchView('trends')"><span class="dot"></span>📉 Trends</div>
+    <div class="nav-item" data-view="alerts" onclick="switchView('alerts')"><span class="dot"></span>🔔 <span data-i18n="nav_alerts">Alerts</span><span class="nav-badge" id="nav-alert-badge" style="display:none;">0</span></div>
+    <div class="nav-section-label">Insights</div>
+    <div class="nav-item" data-view="analytics" onclick="switchView('analytics')"><span class="dot"></span>📈 Analytics</div>
+    <div class="nav-item" data-view="reports" onclick="switchView('reports')"><span class="dot"></span>📄 Reports</div>
+    <div class="nav-section-label">Workspace</div>
+    <div class="nav-item" data-view="messages" onclick="switchView('messages')"><span class="dot"></span>💬 Messages<span class="nav-badge" id="nav-msg-badge" style="display:none;">0</span></div>
+    <div class="nav-item" data-view="appointments" onclick="switchView('appointments')"><span class="dot"></span>🗓️ Appointments</div>
+    <div class="nav-item" data-view="settings" onclick="switchView('settings')"><span class="dot"></span>⚙️ Settings</div>
+    <div class="nav-item logout" onclick="doLogout()"><span class="dot"></span>🚪 Logout</div>
+  </div>
+
+  <div class="main-col">
+    <div class="topbar">
+      <div class="search-box">🔍 <span>Search patient, ID, ward...</span></div>
+      <div class="topbar-right">
+        <div class="live-pill"><span class="pulse"></span> Live · Supabase Connected</div>
+        <div class="bell" onclick="switchView('alerts')">🔔<span class="badge" id="alert-count">0</span></div>
+        <div class="avatar">DA</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="greeting"><h1 data-i18n="greeting">Good Morning, Dr. Arjun</h1><p>Monitoring 4 diabetic patients in real time · Apollo Diabetes Care Center</p></div>
+        <div class="stat-grid">
+          <div class="glass-card stat-card"><div class="stat-top"><div class="stat-icon" style="background:rgba(59,130,246,0.15);color:#60A5FA;">👥</div></div><div class="val">4</div><div class="lbl">Total Patients</div></div>
+          <div class="glass-card stat-card"><div class="stat-top"><div class="stat-icon" style="background:rgba(34,197,94,0.15);color:#4ADE80;">✅</div></div><div class="val">4</div><div class="lbl">Active Sensors</div></div>
+          <div class="glass-card stat-card"><div class="stat-top"><div class="stat-icon" style="background:rgba(249,115,22,0.15);color:#FB923C;">⚠️</div></div><div class="val" id="stat-high">1</div><div class="lbl">High Risk</div></div>
+          <div class="glass-card stat-card"><div class="stat-top"><div class="stat-icon" style="background:rgba(220,38,38,0.15);color:#F87171;">🚨</div></div><div class="val" id="stat-critical">0</div><div class="lbl">Critical Cases</div></div>
+          <div class="glass-card stat-card"><div class="stat-top"><div class="stat-icon" style="background:rgba(168,85,247,0.15);color:#C084FC;">🧠</div></div><div class="val" style="font-size:16px;">Online</div><div class="lbl">AI Risk Engine</div></div>
+        </div>
+        <div class="patient-strip" id="patient-strip"></div>
+        <div class="glass-card">
+          <div class="panel-title"><h3>Patient Information</h3><span class="meta" id="pi-updated">selected patient profile</span></div>
+          <div class="patient-info-grid" id="patient-info-grid"></div>
+        </div>
+        <div class="grid-2col">
+          <div class="glass-card">
+            <div class="panel-title"><h3>Live Sensor Monitoring — <span id="sel-name">Meena R.</span></h3><span class="meta" id="last-packet">updated just now</span></div>
+            <div class="sensor-grid">
+              <div class="sensor-tile"><div class="s-lbl">Pressure</div><div class="s-val" id="sv-pressure">--<span class="s-unit"> kPa</span></div></div>
+              <div class="sensor-tile"><div class="s-lbl">Temperature</div><div class="s-val" id="sv-temp">--<span class="s-unit"> °C</span></div></div>
+              
+              <div class="sensor-tile"><div class="s-lbl">Battery</div><div class="s-val" id="sv-battery">--<span class="s-unit"> %</span></div></div>
+            </div>
+            <div class="panel-title" style="margin-top:20px;"><h3 style="font-size:13px;color:var(--text-mid);">Pressure trend (last 60s)</h3></div>
+            <div class="chart-wrap"><svg id="chart-svg" width="100%" height="150" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+          </div>
+          <div class="glass-card">
+            <div class="panel-title"><h3>Risk Engine</h3><span class="meta">clinical model v1</span></div>
+            <div class="risk-score-ring"><div><div class="risk-num" id="risk-num" style="color:var(--green);">--%</div><span class="risk-badge risk-low" id="risk-badge-main">LOW</span></div></div>
+            <p class="risk-explain" id="risk-explain">Waiting for sensor data...</p>
+            <div class="risk-meta-row"><div><b id="risk-confidence">--%</b>Confidence</div><div><b id="risk-trend">Stable</b>Trend</div><div><b id="risk-eta">--</b>Est. onset</div></div>
+            <div id="risk-factors" style="margin-top:16px;"></div>
+          </div>
+        </div>
+        <div class="grid-2col">
+          <div class="glass-card">
+            <div class="panel-title"><h3>Plantar Pressure Heatmap</h3><span class="meta">8 zones/foot · hover a zone for detail</span></div>
+            <div class="heatmap-wrap" id="heatmap-wrap"></div>
+            <div class="heat-legend"><span><i style="background:#22C55E;"></i>Low</span><span><i style="background:#F97316;"></i>Elevated</span><span><i style="background:#DC2626;"></i>Critical</span></div>
+          </div>
+          <div class="glass-card ai-panel">
+            <div class="ai-header"><div class="ai-badge">✨</div><div><h3 style="font-size:14px;">AI Clinical Assistant</h3><span class="meta" style="font-size:11px;">Powered by Gemini</span></div></div>
+            <button class="ai-btn" id="ai-btn" onclick="generateSummary()">⚡ Generate AI Summary</button>
+            <div class="ai-output" id="ai-output"></div>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div class="panel-title"><h3>Alert Center</h3><span class="meta">live · auto-sorted by severity</span></div>
+          <div id="alert-list-dash"></div>
+        </div>
+      </div>
+
+      <!-- PATIENTS -->
+      <div class="view" id="view-patients">
+        <div class="panel-title"><h3 style="font-size:18px;">Patients</h3><span class="meta">4 total · click a card to jump to their dashboard</span></div>
+        <div class="patients-grid" id="patients-grid"></div>
+      </div>
+
+      <!-- LIVE MONITORING (standalone) -->
+      <div class="view" id="view-live">
+        <div class="panel-title"><h3 style="font-size:18px;">Live Monitoring</h3><span class="meta" id="live-updated">updated just now</span></div>
+        <div class="glass-card">
+          <div class="panel-title"><h3>Sensors — <span id="live-sel-name">Meena R.</span></h3></div>
+          <div class="sensor-grid" id="live-sensor-grid"></div>
+          <div class="panel-title" style="margin-top:20px;"><h3 style="font-size:13px;color:var(--text-mid);">Pressure trend</h3></div>
+          <div class="chart-wrap"><svg id="chart-svg-live" width="100%" height="150" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+        </div>
+      </div>
+
+      <div class="view" id="view-heatmap">
+        <div class="panel-title"><h3 style="font-size:18px;">Pressure Heatmap</h3><span class="meta">both feet · 8 anatomical zones each — toes, metatarsal heads, midfoot, heel</span></div>
+        <div class="glass-card">
+          <div class="heatmap-wrap" id="heatmap-wrap-2"></div>
+          <div class="heat-legend"><span><i style="background:#22C55E;"></i>Low</span><span><i style="background:#F97316;"></i>Elevated</span><span><i style="background:#DC2626;"></i>Critical</span></div>
+        </div>
+        <div class="glass-card" style="margin-top:18px;">
+          <div class="panel-title"><h3>Historical Record</h3><span class="meta">scrub through this patient's past readings</span></div>
+          <div id="heatmap-history-wrap"></div>
+          <input type="range" id="heatmap-history-slider" min="0" max="0" value="0" data-follow="true" style="margin-top:14px;" oninput="scrubHeatmapHistory(this.value)">
+          <div style="text-align:center; font-size:11px; color:var(--text-mid); margin-top:4px;">drag left to review past readings · release at the right edge to resume following live data</div>
+        </div>
+      </div>
+
+      <!-- TRENDS -->
+      <div class="view" id="view-trends">
+        <div class="panel-title"><h3 style="font-size:18px;">Deviation Trends</h3><span class="meta">pressure &amp; temperature drift from learned baseline — <span id="trend-patient-name">--</span></span></div>
+        <div class="trend-interval-grid">
+          <div class="glass-card">
+            <div class="panel-title"><h3 style="font-size:13px;">Live Readings <span class="meta" style="font-weight:400;">(most recent ticks)</span></h3></div>
+            <div class="chart-wrap" style="height:150px;"><svg id="trend-svg-live" width="100%" height="150" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+            <div class="legend-row" id="trend-legend-live"></div>
+          </div>
+          <div class="glass-card">
+            <div class="panel-title"><h3 style="font-size:13px;">Short-Term <span class="meta" style="font-weight:400;">(last ~30 readings)</span></h3></div>
+            <div class="chart-wrap" style="height:150px;"><svg id="trend-svg-short" width="100%" height="150" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+            <div class="legend-row" id="trend-legend-short"></div>
+          </div>
+          <div class="glass-card">
+            <div class="panel-title"><h3 style="font-size:13px;">Full Session <span class="meta" style="font-weight:400;">(long-term drift)</span></h3></div>
+            <div class="chart-wrap" style="height:150px;"><svg id="trend-svg-long" width="100%" height="150" viewBox="0 0 600 150" preserveAspectRatio="none"></svg></div>
+            <div class="legend-row" id="trend-legend-long"></div>
+          </div>
+        </div>
+        <div class="glass-card" style="margin-top:18px;">
+          <p style="font-size:12px; color:var(--text-mid);">Dashed line = patient's own baseline (zero deviation). Each panel plots the same two indicators — pressure (blue) and temperature (orange) — over a different time window, so a short spike vs. a sustained climb are easy to tell apart. A sustained climb above the line, especially with temperature and pressure rising together, is the pattern the risk engine watches for.</p>
+        </div>
+      </div>
+
+      <!-- ALERTS standalone -->
+      <div class="view" id="view-alerts">
+        <div class="panel-title"><h3 style="font-size:18px;">Alert Center</h3><span class="meta">all severity levels</span></div>
+        <div class="glass-card"><div id="alert-list-full"></div></div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="view" id="view-analytics">
+        <div class="panel-title"><h3 style="font-size:18px;">Analytics</h3><span class="meta">live, computed from current readings</span></div>
+        <div class="analytics-grid">
+          <div class="glass-card">
+            <div class="panel-title"><h3>Risk Distribution</h3></div>
+            <div style="display:flex; align-items:center; gap:24px;">
+              <svg width="160" height="160" viewBox="0 0 160 160" id="donut-svg"></svg>
+              <div class="legend-row" id="donut-legend" style="flex-direction:column; align-items:flex-start; margin-top:0;"></div>
+            </div>
+          </div>
+          <div class="glass-card">
+            <div class="panel-title"><h3>Average Pressure by Patient</h3><span class="meta">kPa</span></div>
+            <div id="pressure-bars"></div>
+          </div>
+          <div class="glass-card">
+            <div class="panel-title"><h3>Average Temperature by Patient</h3><span class="meta">°C</span></div>
+            <div id="temp-bars"></div>
+          </div>
+          <div class="glass-card">
+            <div class="panel-title"><h3>Model & Sensor Stats</h3></div>
+            <div class="stat-grid" style="grid-template-columns:1fr 1fr; margin:0;">
+              <div class="glass-card stat-card"><div class="val" id="an-stable">--%</div><div class="lbl">Stable / Low Risk Rate</div></div>
+              <div class="glass-card stat-card"><div class="val">98.2%</div><div class="lbl">Sensor Uptime</div></div>
+              <div class="glass-card stat-card"><div class="val" id="an-avgconf">--%</div><div class="lbl">Avg. Model Confidence</div></div>
+              <div class="glass-card stat-card"><div class="val" id="an-msgs">0</div><div class="lbl">Patient Messages Sent</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="view" id="view-reports">
+        <div class="panel-title"><h3 style="font-size:18px;">Reports</h3><span class="meta">generate a clinical report for any patient</span></div>
+        <div class="glass-card" style="max-width:640px;">
+          <div class="field"><label>Patient</label>
+            <select id="report-patient-select" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--border-glass); background:rgba(15,23,42,0.06); color:var(--text-hi); font-size:14px;"></select>
+          </div>
+          <button class="ai-btn" style="background:rgba(59,130,246,0.14); border-color:rgba(59,130,246,0.4);" onclick="generateReport()">📄 Generate Report</button>
+          <div class="ai-output" id="report-output"></div>
+          <button class="mini-btn" style="margin-top:14px; display:none;" id="print-btn" onclick="window.print()">Download / Print PDF</button>
+        </div>
+      </div>
+
+      <!-- MESSAGES (the real-time patient notification feature) -->
+      <div class="view" id="view-messages">
+        <div class="panel-title"><h3 style="font-size:18px;">Patient Messages</h3><span class="meta">auto-sent once per patient when risk enters Moderate or High/Critical</span></div>
+        <div class="glass-card" id="messages-panel">
+          <div id="messages-list"></div>
+        </div>
+      </div>
+
+      <!-- APPOINTMENTS -->
+      <div class="view" id="view-appointments">
+        <div class="panel-title"><h3 style="font-size:18px;">Appointments</h3><span class="meta">follow-ups scheduled from alerts &amp; messages</span></div>
+
+        <div class="glass-card">
+          <div class="panel-title"><h3>Patient Connection Requests</h3><span class="meta">sent from the patient app's "Connect to Doctor" button</span></div>
+          <div id="connect-req-list">
+            <p style="color:var(--text-mid); font-size:13px;">No connection requests yet.</p>
+          </div>
+        </div>
+
+        <div class="glass-card"><div id="appt-list">
+          <p style="color:var(--text-mid); font-size:13px;">No appointments yet. Go to Alerts or Messages and click "Schedule Follow-up" on a high-risk item.</p>
+        </div></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="view" id="view-settings">
+        <div class="panel-title"><h3 style="font-size:18px;">Settings</h3><span class="meta">changes apply live</span></div>
+        <div class="glass-card" style="max-width:640px;">
+          <div class="settings-block">
+            <h4>Risk Threshold Configuration</h4>
+            <div class="slider-row">
+              <div class="sr-top"><span>Moderate risk threshold</span><b id="th-moderate-val">25%</b></div>
+              <input type="range" id="th-moderate" min="10" max="40" value="25" oninput="updateThreshold('moderate', this.value)">
+            </div>
+            <div class="slider-row">
+              <div class="sr-top"><span>High risk threshold</span><b id="th-high-val">50%</b></div>
+              <input type="range" id="th-high" min="35" max="65" value="50" oninput="updateThreshold('high', this.value)">
+            </div>
+            <div class="slider-row">
+              <div class="sr-top"><span>Critical risk threshold</span><b id="th-critical-val">75%</b></div>
+              <input type="range" id="th-critical" min="60" max="90" value="75" oninput="updateThreshold('critical', this.value)">
+            </div>
+          </div>
+          <div class="settings-block">
+            <h4>Notification Preferences</h4>
+            <div class="toggle-row">
+              <div><div class="tr-lbl">Real-time patient messaging</div><div class="tr-sub">Auto-send a one-time message when a patient enters Moderate or High/Critical risk</div></div>
+              <label class="switch"><input type="checkbox" id="toggle-messaging" checked onchange="MESSAGING_ENABLED=this.checked"><span class="slider-el"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><div class="tr-lbl">Browser notifications</div><div class="tr-sub">Show a toast in this dashboard when an alert fires</div></div>
+              <label class="switch"><input type="checkbox" id="toggle-toast" checked onchange="TOAST_ENABLED=this.checked"><span class="slider-el"></span></label>
+            </div>
+          </div>
+          <div class="settings-block">
+            <h4>Real SMS Delivery</h4>
+            <div class="field"><label>Recipient phone number (full international format)</label>
+              <input id="demo-phone-input" type="tel" placeholder="+91XXXXXXXXXX" oninput="DEMO_PHONE_NUMBER=this.value.trim()">
+            </div>
+            <div class="toggle-row">
+              <div><div class="tr-lbl">Send real SMS instead of mocking it</div><div class="tr-sub">Requires sms-integration.js to be included and a provider key set there — see README</div></div>
+              <label class="switch"><input type="checkbox" id="toggle-real-sms" onchange="REAL_SMS_ENABLED=this.checked; if(this.checked && typeof window.sendRealSMS!=='function'){ showToast(true,'sms-integration.js not loaded','Include the script tag from sms-integration.js in this HTML file first.'); this.checked=false; REAL_SMS_ENABLED=false; }"><span class="slider-el"></span></label>
+            </div>
+          </div>
+          <div class="settings-block">
+            <h4>Theme</h4>
+            <div class="seg-control">
+              <button class="seg-btn active" id="seg-dark" onclick="setTheme('dark')">Dark Mode</button>
+              <button class="seg-btn" id="seg-light" onclick="setTheme('light')">Light Mode</button>
+            </div>
+          </div>
+          <div class="settings-block" style="margin-bottom:0;">
+            <h4>Language</h4>
+            <div class="seg-control">
+              <button class="seg-btn active" id="seg-en" onclick="setLang('en')">English</button>
+              <button class="seg-btn" id="seg-ta" onclick="setLang('ta')">தமிழ்</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Optional: uncomment once sms-integration.js is configured with a real provider key, then flip the
+     "Send real SMS" toggle on in Settings. See README.md for setup. -->
+<!-- <script src="sms-integration.js"></script> -->
+
+<script>
+/* ===================== SUPABASE SETUP =====================
+   The actual project URL / anon key live in supabase-config.js (loaded above, shared by every
+   page in this site) — edit that ONE file to connect this whole app to your Supabase project.
+   Doctor accounts are Supabase Auth users; role + profile are stored in Postgres:
+     users   → { id (=auth uid), role:'doctor', ... }
+     doctors → id (=auth uid), hospital, specialization, contact details                          */
+const supabaseClient = window.supabaseClient || null;
+if(!supabaseClient){ console.warn('Supabase not initialized — check supabase-config.js.'); }
+
+function showDoctorRegister(){ document.getElementById('doctor-register-screen').style.display = 'flex'; }
+
+async function submitDoctorRegistration(){
+  const val = id => document.getElementById(id).value.trim();
+  const name = val('dr-name'), hospital = val('dr-hospital'), specialization = val('dr-specialization'),
+    phone = val('dr-phone'), email = val('dr-email'), password = document.getElementById('dr-password').value;
+  const errBox = document.getElementById('dr-error');
+  if(!name || !hospital || !specialization || !phone || !email || !password){
+    errBox.textContent = 'Please fill in every field.'; errBox.style.display = 'block'; return;
+  }
+  if(!supabaseClient){
+    errBox.textContent = 'Supabase isn\'t configured yet — add your project URL/anon key to supabase-config.js.';
+    errBox.style.display = 'block';
+    return;
+  }
+  try{
+    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({ email, password });
+    if(signUpError) throw signUpError;
+    const uid = signUpData.user.id;
+    const nowIso = new Date().toISOString();
+    await supabaseClient.from('users').upsert({ id: uid, role: 'doctor', name, email, created_at: nowIso });
+    await supabaseClient.from('doctors').upsert({ id: uid, name, hospital, specialization, phone, created_at: nowIso });
+    errBox.style.display = 'none';
+    document.getElementById('doctor-register-screen').style.display = 'none';
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = password;
+    doLogin();
+  }catch(e){
+    errBox.textContent = 'Registration failed: ' + e.message; errBox.style.display = 'block';
+  }
+}
+
+/* ===================== DATA ===================== */
+const CALIBRATION_READINGS = 8; // stands in for the "monitor 7 days, learn baseline" phase in a compressed demo timeframe
+const patients = [
+  { id:"P-1042", name:"Meena R.", age:58, gender:"F", ward:"Diabetology", escalate:true, phone:"+91769588632",
+    weightKg:78, heightM:1.58, priorEpisodes:2, walkMinutes:40, diabetesType:"Type 2", diabetesYears:14,
+    baseline:{pressure:32, temp:33.2, humidity:45}, history:[], heatmapHistory:[], learnedBaseline:null, notifiedLevels:new Set(),
+    useLiveSensor:true, liveZones:null }, // useLiveSensor: true means this patient's readings come from the real
+    // Supabase sensor_data table (see fetchLatestSensorRow/subscribeToLiveSensor below) instead of being simulated.
+  { id:"P-1043", name:"Suresh K.", age:64, gender:"M", ward:"Diabetology", escalate:false,
+    weightKg:82, heightM:1.72, priorEpisodes:0, walkMinutes:65, diabetesType:"Type 2", diabetesYears:9,
+    baseline:{pressure:28, temp:32.8, humidity:40}, history:[], heatmapHistory:[], learnedBaseline:null, notifiedLevels:new Set() },
+  { id:"P-1044", name:"Lakshmi V.", age:49, gender:"F", ward:"Endocrinology", escalate:false,
+    weightKg:64, heightM:1.60, priorEpisodes:0, walkMinutes:80, diabetesType:"Type 1", diabetesYears:22,
+    baseline:{pressure:25, temp:32.5, humidity:42}, history:[], heatmapHistory:[], learnedBaseline:null, notifiedLevels:new Set() },
+  { id:"P-1045", name:"Ibrahim S.", age:71, gender:"M", ward:"Diabetology", escalate:false,
+    weightKg:90, heightM:1.68, priorEpisodes:1, walkMinutes:25, diabetesType:"Type 2", diabetesYears:17,
+    baseline:{pressure:30, temp:33.0, humidity:44}, history:[], heatmapHistory:[], learnedBaseline:null, notifiedLevels:new Set() },
+];
+let selectedId = patients[0].id;
+let tick = 0;
+let alerts = [];
+let messages = [];
+let appointments = [];
+let MESSAGING_ENABLED = true;
+let TOAST_ENABLED = true;
+let REAL_SMS_ENABLED = false; // off by default — turn on in Settings once a real phone number + sms-integration.js are configured
+let DEMO_PHONE_NUMBER = ""; // set this in Settings → Notification Preferences, in full international format e.g. +91XXXXXXXXXX
+let THRESH = { moderate:25, high:50, critical:75 };
+let currentLang = 'en';
+
+const I18N = {
+  en:{ nav_dashboard:"Dashboard", nav_patients:"Patients", nav_alerts:"Alerts", greeting:"Good Morning, Dr. Arjun" },
+  ta:{ nav_dashboard:"டாஷ்போர்டு", nav_patients:"நோயாளிகள்", nav_alerts:"எச்சரிக்கைகள்", greeting:"காலை வணக்கம், டாக்டர் அர்ஜுன்" }
+};
+
+/* ===================== AUTH ===================== */
+async function doLogin(){
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errBox = document.getElementById('login-error');
+  if(errBox) errBox.style.display = 'none';
+
+  // Demo shortcut — always works, even before Supabase is configured.
+  if(email === 'doctor@diabhelp.ai' && password === 'Doctor@123'){
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').classList.add('active');
+    renderPatientStrip();
+    populateReportSelect();
+    startSimulation();
+    return;
+  }
+  if(!supabaseClient){
+    if(errBox){ errBox.textContent = 'Supabase isn\'t configured yet — use the demo login, or add your project URL/anon key in supabase-config.js.'; errBox.style.display = 'block'; }
+    return;
+  }
+  try{
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if(signInError) throw signInError;
+    const uid = signInData.user.id;
+    const { data: userRow, error: userErr } = await supabaseClient.from('users').select('*').eq('id', uid).single();
+    if(userErr || !userRow || userRow.role !== 'doctor'){
+      await supabaseClient.auth.signOut();
+      if(errBox){ errBox.textContent = 'This account isn\'t registered as a doctor here — pick the right portal on the login screen.'; errBox.style.display = 'block'; }
+      return;
+    }
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').classList.add('active');
+    renderPatientStrip();
+    populateReportSelect();
+    startSimulation();
+  }catch(e){
+    if(errBox){ errBox.textContent = 'Sign-in failed: ' + e.message; errBox.style.display = 'block'; }
+  }
+}
+function doLogout(){
+  document.getElementById('app-screen').classList.remove('active');
+  document.getElementById('login-screen').style.display = 'grid';
+}
+
+/* ===================== NAV / VIEW SWITCHING ===================== */
+function switchView(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.nav-item[data-view]').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
+  if(view==='appointments') loadConnectionRequests();
+}
+
+/* ===================== PATIENT CONNECTION REQUESTS (shared storage bridge to patient app) ===================== */
+// The patient dashboard's "Connect to Doctor" button writes one entry per request to shared storage
+// under the "appt_req:" prefix. This polls and renders them here as actionable appointment options.
+const connectReqActionedKeys = new Set();
+async function loadConnectionRequests(){
+  const list = document.getElementById('connect-req-list');
+  if(!list || typeof window.storage === 'undefined') return;
+  try{
+    const listed = await window.storage.list('appt_req:', true);
+    const keys = (listed && listed.keys) ? listed.keys : [];
+    if(keys.length===0){
+      list.innerHTML = '<p style="color:var(--text-mid); font-size:13px;">No connection requests yet.</p>';
+      return;
+    }
+    const reqs = [];
+    for(const k of keys){
+      try{
+        const r = await window.storage.get(k, true);
+        if(r && r.value){ const parsed = JSON.parse(r.value); parsed._key = k; reqs.push(parsed); }
+      }catch(e){ /* skip unreadable entry */ }
+    }
+    reqs.sort((a,b)=> (b.ts||0) - (a.ts||0));
+    list.innerHTML = reqs.map(r=>{
+      const actioned = connectReqActionedKeys.has(r._key) || r.status==='scheduled';
+      return `<div class="alert-item">
+        <div class="alert-left">
+          <span class="alert-dot" style="background:${actioned?'#22C55E':'#3B82F6'};"></span>
+          <div><div class="alert-name">${r.name||'Patient'} <span style="color:var(--text-low); font-weight:400;">· ${r.patientId||''}</span></div>
+          <div class="alert-sub">Requested: ${r.type||'Consultation'}</div></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="alert-time">${r.ts ? new Date(r.ts).toLocaleString() : ''}</div>
+          ${actioned
+            ? '<span class="risk-badge risk-low">Scheduled</span>'
+            : `<button class="mini-btn" onclick="scheduleFromConnectRequest('${r._key}','${(r.patientId||'').replace(/'/g,"")}','${(r.name||'').replace(/'/g,"")}','${(r.type||'').replace(/'/g,"")}')">Schedule Follow-up</button>`}
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    list.innerHTML = '<p style="color:var(--text-mid); font-size:13px;">Could not load connection requests right now.</p>';
+  }
+}
+function scheduleFromConnectRequest(key, patientId, name, type){
+  connectReqActionedKeys.add(key);
+  appointments.unshift({ patientId, name, ts: Date.now(), type: type ? `${type} (patient-requested)` : 'Patient-requested consultation' });
+  const list = document.getElementById('appt-list');
+  list.innerHTML = appointments.map(a=>`<div class="alert-item"><div class="alert-left">
+    <span class="alert-dot" style="background:var(--blue);"></span>
+    <div><div class="alert-name">${a.name} <span style="color:var(--text-low); font-weight:400;">· ${a.patientId}</span></div>
+    <div class="alert-sub">${a.type}</div></div></div><div class="alert-time">just now</div></div>`).join('');
+  loadConnectionRequests();
+  showToast(false, 'Appointment scheduled', `Follow-up created for ${name}.`);
+}
+setInterval(()=>{ if(document.getElementById('view-appointments') && document.getElementById('view-appointments').classList.contains('active')) loadConnectionRequests(); }, 6000);
+
+/* ===================== RISK ENGINE (v2 — multi-factor, BMI-corrected, self-learning baseline) ===================== */
+function bmiOf(patient){ return patient.weightKg / (patient.heightM*patient.heightM); }
+
+// After CALIBRATION_READINGS readings, lock in a personalized baseline (avg of the calibration window)
+// instead of the hardcoded seed baseline — this is the "monitor N days, learn the patient's own pattern" step.
+function learnBaselineIfReady(patient){
+  if(patient.learnedBaseline || patient.history.length < CALIBRATION_READINGS) return;
+  const window = patient.history.slice(0, CALIBRATION_READINGS);
+  const avg = (k)=> window.reduce((s,h)=>s+h[k],0) / window.length;
+  patient.learnedBaseline = { pressure: avg('pressure'), temp: avg('temp'), humidity: avg('humidity') };
+}
+
+function computeRisk(patient){
+  learnBaselineIfReady(patient);
+  const isCalibrating = !patient.learnedBaseline;
+  const base = patient.learnedBaseline || patient.baseline;
+  const latest = patient.history[patient.history.length-1] || base;
+
+  if(isCalibrating){
+    return { score:0, category:"calibrating", label:"LEARNING BASELINE", confidence:Math.round((patient.history.length/CALIBRATION_READINGS)*100),
+      trendLabel:"Calibrating", pressureDelta:0, tempDelta:0, bmi:Math.round(bmiOf(patient)*10)/10,
+      calibrationPct: Math.round((patient.history.length/CALIBRATION_READINGS)*100) };
+  }
+
+  // BMI correction: heavier patients carry more chronic load, so their pressure-delta threshold is tightened
+  // (threshold = reference_threshold * 22/BMI) rather than using one fixed 25kPa ceiling for every body type.
+  const bmi = bmiOf(patient);
+  const pressureThreshold = 25 * (22 / bmi);
+
+  const pressureDelta = Math.max(0, latest.pressure - base.pressure);
+  const tempDelta = Math.max(0, latest.temp - base.temp);
+  const humidityDelta = Math.abs(latest.humidity - base.humidity);
+
+  const pressureScore = Math.min(100, (pressureDelta / pressureThreshold) * 100);
+  const tempScore = Math.min(100, (tempDelta / 3) * 100);
+  const humidityScore = Math.min(100, (humidityDelta / 15) * 100);
+
+  let pressureTrendScore = 0, tempTrendScore = 0;
+  if(patient.history.length >= 5){
+    const rp = patient.history.slice(-5).map(h=>h.pressure);
+    const rt = patient.history.slice(-5).map(h=>h.temp);
+    pressureTrendScore = Math.min(100, Math.max(0, ((rp[rp.length-1]-rp[0])/5) * 12));
+    tempTrendScore = Math.min(100, Math.max(0, ((rt[rt.length-1]-rt[0])/5) * 40));
+  }
+
+  const walkingScore = Math.min(100, (patient.walkMinutes / 180) * 100); // more sustained time-on-feet = more cumulative load
+  const historyScore = Math.min(100, patient.priorEpisodes * 35 + (patient.priorEpisodes>0 ? 15 : 0)); // prior ulcer episodes raise baseline vigilance
+
+  const risk = Math.round(
+    pressureScore      * 0.30 +
+    tempScore          * 0.25 +
+    pressureTrendScore * 0.15 +
+    tempTrendScore      * 0.10 +
+    walkingScore        * 0.10 +
+    humidityScore       * 0.05 +
+    historyScore        * 0.05
+  );
+  const clamped = Math.max(0, Math.min(100, risk));
+  let category = "low", label="LOW";
+  if(clamped >= THRESH.critical){ category="critical"; label="CRITICAL"; }
+  else if(clamped >= THRESH.high){ category="high"; label="HIGH"; }
+  else if(clamped >= THRESH.moderate){ category="moderate"; label="MODERATE"; }
+  const confidence = Math.min(97, 62 + patient.history.length * 2);
+  const trendLabel = pressureTrendScore > 30 ? "Rising" : pressureTrendScore < -10 ? "Improving" : "Stable";
+  return {
+    score:clamped, category, label, confidence, trendLabel, pressureDelta, tempDelta,
+    bmi: Math.round(bmi*10)/10, pressureThreshold: Math.round(pressureThreshold),
+    factors: {
+      pressure: Math.round(pressureScore), temperature: Math.round(tempScore),
+      pressureTrend: Math.round(pressureTrendScore), temperatureTrend: Math.round(tempTrendScore),
+      walking: Math.round(walkingScore), humidity: Math.round(humidityScore), history: Math.round(historyScore)
+    }
+  };
+}
+
+/* ===================== SIMULATION LOOP ===================== */
+function startSimulation(){
+  patients.forEach(p => seedHistory(p));
+  renderAll();
+  subscribeToLiveSensor(); // starts pulling real readings for the useLiveSensor patient (Supabase Realtime + 1s poll fallback)
+  setInterval(()=>{
+    tick++;
+    patients.forEach(p => stepPatient(p));
+    renderAll();
+  }, 2200);
+}
+function seedHistory(p){
+  for(let i=0;i<3;i++){
+    p.history.push({ pressure: p.baseline.pressure + rand(-2,2), temp: p.baseline.temp + rand(-0.3,0.3),
+      humidity: p.baseline.humidity + rand(-3,3), battery: 90 - i*0.3, t: i });
+  }
+}
+function stepPatient(p){
+  const last = p.history[p.history.length-1];
+  let pressure, temp, humidity;
+
+  if(p.useLiveSensor && p.liveZones){
+    // Real hardware path: use the latest row pulled from Supabase (heel/midfoot/forefoot/toe/temperature)
+    // instead of the client-side simulation. See fetchLatestSensorRow / subscribeToLiveSensor below.
+    const z = p.liveZones;
+    pressure = (Number(z.heel)+Number(z.midfoot)+Number(z.forefoot)+Number(z.toe)) / 4;
+    temp = Number(z.temperature);
+    humidity = last ? last.humidity + rand(-1,1) : p.baseline.humidity;
+  } else if(p.escalate){
+    pressure = Math.min(58, last.pressure + rand(0.6, 2.2));
+    temp = Math.min(p.baseline.temp + 3.4, last.temp + rand(0.02, 0.12));
+    humidity = last.humidity + rand(-1,1);
+  } else {
+    pressure = p.baseline.pressure + rand(-2.5, 2.5);
+    temp = p.baseline.temp + rand(-0.25, 0.25);
+    humidity = p.baseline.humidity + rand(-2,2);
+  }
+  const battery = Math.max(15, last.battery - 0.15);
+  p.walkMinutes = Math.max(0, Math.min(180, p.walkMinutes + rand(-4, 4)));
+  p.history.push({pressure, temp, humidity, battery, t: tick});
+  if(p.history.length > 40) p.history.shift();
+
+  const risk = computeRisk(p);
+  const zones = computeHeatmapZones(risk, p);
+  p.heatmapHistory.push({ ts: Date.now(), tick, left: zones.left, right: zones.right, pressure, temp, category: risk.category });
+  if(p.heatmapHistory.length > 30) p.heatmapHistory.shift();
+
+  if(risk.category === "high" || risk.category === "critical"){ maybeRaiseAlert(p, risk); }
+  maybeSendPatientMessage(p, risk);
+}
+function rand(a,b){ return a + Math.random()*(b-a); }
+
+/* ===================== ALERTS ===================== */
+function maybeRaiseAlert(patient, risk){
+  if(risk.category === 'calibrating') return;
+  const already = alerts.find(a => a.patientId===patient.id && a.category===risk.category && (Date.now()-a.ts) < 15000);
+  if(already) return;
+  alerts.unshift({ patientId: patient.id, name: patient.name, category: risk.category, score: risk.score,
+    pressure: patient.history[patient.history.length-1].pressure.toFixed(1), temp: patient.history[patient.history.length-1].temp.toFixed(1), ts: Date.now() });
+  alerts = alerts.slice(0, 20);
+  if(TOAST_ENABLED){
+    showToast(risk.category==='critical', `${patient.name} — ${risk.label} risk`, `Pressure ${patient.history[patient.history.length-1].pressure.toFixed(1)}kPa, risk score ${risk.score}%`);
+  }
+}
+
+/* ===================== REAL-TIME PATIENT MESSAGING ===================== */
+// Fires exactly once per patient per severity tier (moderate, then high/critical), as requested.
+function maybeSendPatientMessage(patient, risk){
+  if(!MESSAGING_ENABLED || risk.category === 'calibrating') return;
+
+  if(risk.category === 'moderate' && !patient.notifiedLevels.has('moderate')){
+    patient.notifiedLevels.add('moderate');
+    const text = `Hi ${patient.name.split(' ')[0]}, your foot sensor is showing slightly elevated pressure (${risk.pressureDelta.toFixed(1)}kPa above your usual reading). Try to reduce time on your feet today, wear your offloading footwear, and check your foot this evening for redness or warmth. No action needed beyond that right now.`;
+    pushMessage(patient, 'moderate', text, 'advice');
+  }
+  if((risk.category === 'high' || risk.category === 'critical') && !patient.notifiedLevels.has('high')){
+    patient.notifiedLevels.add('high');
+    const urgent = risk.category === 'critical';
+    const text = urgent
+      ? `Hi ${patient.name.split(' ')[0]}, your readings show a CRITICAL risk of pressure injury on your foot. Please contact Dr. Arjun's clinic immediately or visit urgent care today — do not wait for your next scheduled visit.`
+      : `Hi ${patient.name.split(' ')[0]}, your readings show a HIGH risk of pressure injury. Please contact Dr. Arjun's clinic to schedule a check-up within 24 hours.`;
+    pushMessage(patient, risk.category, text, 'urgent');
+  }
+}
+function pushMessage(patient, category, text, kind){
+  const msg = { patientId: patient.id, name: patient.name, category, text, kind, channel: kind==='urgent' ? 'SMS' : 'App', ts: Date.now(), status:'Delivered' };
+  messages.unshift(msg);
+  if(TOAST_ENABLED){
+    showToast(kind==='urgent', `Message sent to ${patient.name}`, text.slice(0,90)+'...');
+  }
+  // Real SMS hook — see sms-integration.js. Wires in automatically if that script is included, REAL_SMS_ENABLED is true, and a phone number is set in Settings.
+  if(REAL_SMS_ENABLED && DEMO_PHONE_NUMBER && typeof window.sendRealSMS === 'function'){
+    msg.status = 'Sending...';
+    window.sendRealSMS(DEMO_PHONE_NUMBER, text).then(res=>{
+      msg.status = res.success ? 'Delivered (real SMS)' : 'Failed: ' + (res.error||'unknown error');
+      renderMessages();
+    }).catch(err=>{ msg.status = 'Failed: ' + err.message; renderMessages(); });
+  }
+}
+
+/* ===================== TOAST ===================== */
+function showToast(urgent, title, body){
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast' + (urgent ? ' urgent' : '');
+  el.innerHTML = `<div class="t-top">${urgent?'🚨':'📨'} ${title}</div><div class="t-body">${body}</div>`;
+  c.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(), 300); }, 5000);
+}
+
+/* ===================== SETTINGS ACTIONS ===================== */
+function updateThreshold(which, val){
+  THRESH[which] = Number(val);
+  document.getElementById('th-'+which+'-val').textContent = val+'%';
+  renderAll();
+}
+function setTheme(mode){
+  document.body.classList.toggle('light', mode==='light');
+  document.getElementById('seg-dark').classList.toggle('active', mode==='dark');
+  document.getElementById('seg-light').classList.toggle('active', mode==='light');
+}
+function setLang(lang){
+  currentLang = lang;
+  document.getElementById('seg-en').classList.toggle('active', lang==='en');
+  document.getElementById('seg-ta').classList.toggle('active', lang==='ta');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(I18N[lang][key]) el.textContent = I18N[lang][key];
+  });
+}
+
+/* ===================== RENDERING ===================== */
+function initials(name){ return name.split(' ').map(w=>w[0]).join('').slice(0,2); }
+function selectPatient(id){ selectedId = id; renderAll(); }
+
+function renderPatientStrip(){
+  const strip = document.getElementById('patient-strip');
+  strip.innerHTML = patients.map(p=>{
+    const risk = computeRisk(p);
+    return `<div class="patient-chip ${p.id===selectedId?'selected':''}" onclick="selectPatient('${p.id}')">
+      <div class="avatar" style="width:30px;height:30px;font-size:11px;">${initials(p.name)}</div>
+      <div><div class="pname">${p.name}</div><div class="pmeta">${p.id} · ${p.age}${p.gender}</div></div>
+      <span class="risk-badge risk-${risk.category}">${risk.label}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderPatientsGrid(){
+  const grid = document.getElementById('patients-grid');
+  grid.innerHTML = patients.map(p=>{
+    const risk = computeRisk(p);
+    const latest = p.history[p.history.length-1] || p.baseline;
+    return `<div class="glass-card patient-card">
+      <div class="pc-top">
+        <div class="avatar" style="width:40px;height:40px;">${initials(p.name)}</div>
+        <div><div class="pc-name">${p.name}</div><div class="pc-meta">${p.id} · ${p.age}${p.gender} · ${p.ward}</div></div>
+      </div>
+      <div class="pc-row"><span>Diabetes</span><span>${p.diabetesType} · ${p.diabetesYears}y</span></div>
+      <div class="pc-row"><span>Risk</span><span class="risk-badge risk-${risk.category}">${risk.label}</span></div>
+      <div class="pc-row"><span>Battery</span><span>${Math.round(latest.battery)}%</span></div>
+      <div class="pc-row"><span>Sensor</span><span style="color:var(--green);">● Connected</span></div>
+      <div class="pc-actions">
+        <button class="mini-btn" onclick="selectPatient('${p.id}'); switchView('dashboard');">View Details</button>
+        <button class="mini-btn" onclick="showToast(false,'Demo mode','Editing patient records is disabled in this demo build.')">Edit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAll(){
+  renderPatientStrip();
+  renderPatientsGrid();
+  const patient = patients.find(p=>p.id===selectedId);
+  const latest = patient.history[patient.history.length-1];
+  const risk = computeRisk(patient);
+
+  document.getElementById('sel-name').textContent = patient.name;
+  document.getElementById('sv-pressure').innerHTML = latest.pressure.toFixed(1)+'<span class="s-unit"> kPa</span>';
+  document.getElementById('sv-temp').innerHTML = latest.temp.toFixed(1)+'<span class="s-unit"> °C</span>';
+  
+  document.getElementById('sv-battery').innerHTML = Math.round(latest.battery)+'<span class="s-unit"> %</span>';
+  document.getElementById('last-packet').textContent = 'updated ' + (tick%2===0?'just now':'1s ago');
+  document.getElementById('live-updated').textContent = 'updated ' + (tick%2===0?'just now':'1s ago');
+  document.getElementById('live-sel-name').textContent = patient.name;
+  document.getElementById('live-sensor-grid').innerHTML = document.getElementById('sensor-grid') ? '' : `
+    <div class="sensor-tile"><div class="s-lbl">Pressure</div><div class="s-val">${latest.pressure.toFixed(1)}<span class="s-unit"> kPa</span></div></div>
+    <div class="sensor-tile"><div class="s-lbl">Temperature</div><div class="s-val">${latest.temp.toFixed(1)}<span class="s-unit"> °C</span></div></div>
+    
+    <div class="sensor-tile"><div class="s-lbl">Battery</div><div class="s-val">${Math.round(latest.battery)}<span class="s-unit"> %</span></div></div>
+  `;
+
+  const riskColor = {low:'var(--green)',moderate:'var(--orange)',high:'#F87171',critical:'#FCA5A5',calibrating:'#60A5FA'}[risk.category];
+  ['risk-num','risk-num-2'].forEach(id=>{ const el=document.getElementById(id); el.textContent = risk.category==='calibrating' ? risk.calibrationPct+'%' : risk.score+'%'; el.style.color = riskColor; });
+  ['risk-badge-main','risk-badge-2'].forEach(id=>{ const el=document.getElementById(id); el.className = 'risk-badge risk-'+risk.category; el.textContent = risk.label; });
+  document.getElementById('risk-confidence').textContent = risk.confidence+'%';
+  document.getElementById('risk-confidence-2').textContent = risk.confidence+'%';
+  document.getElementById('risk-trend').textContent = risk.trendLabel;
+  document.getElementById('risk-trend-2').textContent = risk.trendLabel;
+  const etaTxt = risk.category==='critical' ? '24–48 hrs' : risk.category==='high' ? '5–8 days' : '—';
+  document.getElementById('risk-eta').textContent = etaTxt;
+  document.getElementById('risk-eta-2').textContent = etaTxt;
+  const explainTxt = risk.category === 'calibrating'
+    ? `Learning ${patient.name.split(' ')[0]}'s personal baseline from their own readings (${patient.history.length}/${CALIBRATION_READINGS}) — pressure, temperature, walking pattern — before scoring risk against a generic norm.`
+    : `Pressure is ${risk.pressureDelta.toFixed(1)}kPa above this patient's learned baseline (BMI-adjusted threshold: ${risk.pressureThreshold}kPa) with a ${risk.tempDelta.toFixed(1)}°C temperature rise. `+
+      (risk.category==='critical' ? 'Sustained elevated load detected — immediate offloading recommended.' :
+       risk.category==='high' ? 'Trend shows sustained pressure increase — recommend clinical review within 24h.' :
+       'Readings within an acceptable range for this patient.');
+  document.getElementById('risk-explain').textContent = explainTxt;
+  document.getElementById('risk-explain-2').textContent = explainTxt;
+  const factorsEl = document.getElementById('risk-factors');
+  if(factorsEl){
+    factorsEl.innerHTML = risk.category==='calibrating' ? '' : Object.entries({
+      Pressure:[risk.factors.pressure,30], Temperature:[risk.factors.temperature,25], 'Pressure Trend':[risk.factors.pressureTrend,15],
+      'Temp Trend':[risk.factors.temperatureTrend,10], 'Walking Duration':[risk.factors.walking,10], 'Patient History':[risk.factors.history,5]
+    }).map(([label,[val,weight]])=>`<div class="bar-row"><span class="bar-lbl">${label}</span><div class="bar-track"><div class="bar-fill" style="width:${val}%; background:${zoneColor(val)};"></div></div><span class="bar-val">${val}% ·${weight}%w</span></div>`).join('');
+  }
+
+  document.getElementById('stat-high').textContent = patients.filter(p=>computeRisk(p).category==='high').length;
+  document.getElementById('stat-critical').textContent = patients.filter(p=>computeRisk(p).category==='critical').length;
+
+  renderChart(patient, 'chart-svg');
+  renderChart(patient, 'chart-svg-live');
+  renderPatientInfo(patient, risk);
+  renderHeatmap(risk, patient, 'heatmap-wrap');
+  renderHeatmap(risk, patient, 'heatmap-wrap-2');
+  renderHeatmapHistory();
+  renderTrendGraphs(patient);
+  renderAlerts();
+  renderMessages();
+  renderAnalytics();
+
+  document.getElementById('alert-count').textContent = alerts.length;
+  const navAlertBadge = document.getElementById('nav-alert-badge');
+  navAlertBadge.textContent = alerts.length; navAlertBadge.style.display = alerts.length? 'inline-block':'none';
+  const navMsgBadge = document.getElementById('nav-msg-badge');
+  navMsgBadge.textContent = messages.length; navMsgBadge.style.display = messages.length? 'inline-block':'none';
+}
+
+function renderPatientInfo(patient, risk){
+  const grid = document.getElementById('patient-info-grid');
+  if(!grid) return;
+  const bmi = Math.round(bmiOf(patient)*10)/10;
+  const heightCm = Math.round(patient.heightM*100);
+  const fields = [
+    ['Patient ID', patient.id],
+    ['Name', patient.name],
+    ['Age', patient.age+' yrs'],
+    ['Gender', patient.gender==='F' ? 'Female' : 'Male'],
+    ['Height', heightCm+' cm'],
+    ['Weight', patient.weightKg+' kg'],
+    ['BMI', bmi + (bmi>=30?' (Obese)':bmi>=25?' (Overweight)':' (Normal)')],
+    ['Diabetes Type', patient.diabetesType],
+    ['Duration of Diabetes', patient.diabetesYears+' years'],
+    ['Ward / Department', patient.ward],
+    ['Prior Ulcer Episodes', patient.priorEpisodes],
+    ['Baseline Status', risk.category==='calibrating' ? `Learning (${risk.calibrationPct||0}%)` : 'Personalized baseline locked'],
+  ];
+  grid.innerHTML = fields.map(([lbl,val])=>`<div class="pi-item"><div class="pi-lbl">${lbl}</div><div class="pi-val">${val}</div></div>`).join('');
+}
+
+function renderChart(patient, svgId){
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const data = patient.history.slice(-20).map(h=>h.pressure);
+  const max = Math.max(...data, 40), min = Math.min(...data, 15);
+  const w=600, h=150, pad=10;
+  const pts = data.map((v,i)=>{ const x = pad + (i/(data.length-1))*(w-pad*2); const y = h - pad - ((v-min)/(max-min||1))*(h-pad*2); return `${x},${y}`; }).join(' ');
+  const areaPts = `${pad},${h-pad} ${pts} ${w-pad},${h-pad}`;
+  svg.innerHTML = `<defs><linearGradient id="g_${svgId}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.35"/><stop offset="100%" stop-color="#3B82F6" stop-opacity="0"/></linearGradient></defs>
+    <polygon points="${areaPts}" fill="url(#g_${svgId})"/>
+    <polyline points="${pts}" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+}
+
+function drawIntervalChart(svgId, legendId, data, base){
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const pDeltas = data.map(h=>h.pressure - base.pressure);
+  const tDeltas = data.map(h=>h.temp - base.temp);
+  const allVals = [...pDeltas, ...tDeltas, 1, -1];
+  const max = Math.max(...allVals), min = Math.min(...allVals);
+  const w=600, h=150, pad=14;
+  const scaleY = v => h - pad - ((v-min)/((max-min)||1))*(h-pad*2);
+  const scaleX = i => pad + (i/((data.length-1)||1))*(w-pad*2);
+  const zeroY = scaleY(0);
+  const line = (vals,color)=>{
+    const pts = vals.map((v,i)=>`${scaleX(i)},${scaleY(v)}`).join(' ');
+    return `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  };
+  svg.innerHTML = `
+    <line x1="${pad}" y1="${zeroY}" x2="${w-pad}" y2="${zeroY}" stroke="rgba(148,163,184,0.3)" stroke-dasharray="4,4"/>
+    ${line(pDeltas, '#3B82F6')}
+    ${line(tDeltas, '#F97316')}
+  `;
+  const legend = document.getElementById(legendId);
+  if(legend) legend.innerHTML = `<span><i style="background:#3B82F6;"></i>Pressure Δ (kPa)</span><span><i style="background:#F97316;"></i>Temperature Δ (°C)</span>`;
+}
+// Three panels sample the same underlying reading history at different windows/strides, so a short
+// spike (Live) vs. a pattern that's held up over a longer stretch (Short-Term / Full Session) read distinctly.
+function renderTrendGraphs(patient){
+  const base = patient.learnedBaseline || patient.baseline;
+  const full = patient.history;
+  const live = full.slice(-10);
+  const shortTerm = full.slice(-30);
+  const longTerm = full.filter((_,i)=> i % 2 === 0 || i === full.length-1); // thinned full-session view
+  drawIntervalChart('trend-svg-live', 'trend-legend-live', live, base);
+  drawIntervalChart('trend-svg-short', 'trend-legend-short', shortTerm, base);
+  drawIntervalChart('trend-svg-long', 'trend-legend-long', longTerm.length ? longTerm : full, base);
+  const patientName = document.getElementById('trend-patient-name');
+  if(patientName) patientName.textContent = patient.name;
+}
+
+function zoneColor(val){ if(val < 30) return '#22C55E'; if(val < 55) return '#F97316'; return '#DC2626'; }
+
+// Anatomical zone layout — matches how real plantar-pressure mapping systems (e.g. F-scan) segment the foot,
+// so "all regions" of the sole are represented rather than just 4 coarse zones.
+const ZONE_DEFS = [
+  { name:'Hallux (Big Toe)',        cx:36, cy:22, r:9  },
+  { name:'Toes II–V',               cx:62, cy:26, r:10 },
+  { name:'1st Metatarsal Head',     cx:30, cy:58, r:10 },
+  { name:'Central Metatarsal Heads',cx:50, cy:64, r:12 },
+  { name:'5th Metatarsal Head',     cx:70, cy:60, r:10 },
+  { name:'Midfoot / Lateral Arch',  cx:50, cy:107,r:15 },
+  { name:'Medial Heel',             cx:36, cy:157,r:13 },
+  { name:'Lateral Heel',            cx:64, cy:157,r:13 },
+];
+const BASE_ZONE_LOAD = [14,12,22,26,20,10,24,22]; // typical relative resting load by region — forefoot & heel bear more than midfoot
+
+function computeHeatmapZones(risk, patient){
+  const escalated = patient.escalate && risk.category !== 'calibrating';
+  const baseT = patient.baseline ? patient.baseline.temp : 32.0;
+
+  if(patient.useLiveSensor && patient.liveZones){
+    // Real hardware path: map the 4 physical sensor zones (toe/forefoot/midfoot/heel) straight onto the
+    // 8-point anatomical model — toe covers zones 0-1, forefoot 2-4, midfoot zone 5, heel zones 6-7.
+    // The right foot has no physical sensor in this prototype, so it's shown as a light simulated baseline.
+    const z = patient.liveZones;
+    const t = Number(z.temperature) || baseT;
+    const left = [
+      { p: Number(z.toe), t }, { p: Number(z.toe), t },
+      { p: Number(z.forefoot), t }, { p: Number(z.forefoot), t }, { p: Number(z.forefoot), t },
+      { p: Number(z.midfoot), t },
+      { p: Number(z.heel), t }, { p: Number(z.heel), t },
+    ];
+    const right = BASE_ZONE_LOAD.map(v=>({ p: Math.max(4, v+rand(-4,4)), t: baseT + rand(-0.2,0.2) }));
+    return { left, right };
+  }
+
+  if(!escalated){
+    return {
+      left: BASE_ZONE_LOAD.map(v=>({ p: Math.max(4, v+rand(-4,4)), t: baseT + rand(-0.2,0.2) })),
+      right: BASE_ZONE_LOAD.map(v=>({ p: Math.max(4, v+rand(-4,4)), t: baseT + rand(-0.2,0.2) }))
+    };
+  }
+  const left = BASE_ZONE_LOAD.map((v,i)=>{
+    if(i===6 || i===7) return { p: Math.min(97, v + risk.score*0.9 + rand(-2,2)), t: baseT + (risk.score/100)*2.5 + rand(-0.2,0.2) };
+    if(i===2 || i===3 || i===4) return { p: Math.min(72, v + risk.score*0.28 + rand(-2,2)), t: baseT + (risk.score/100)*1.0 + rand(-0.2,0.2) };
+    return { p: Math.max(4, v + rand(-3,3)), t: baseT + rand(-0.2,0.2) };
+  });
+  const right = BASE_ZONE_LOAD.map(v=>({ p: Math.max(4, v+rand(-4,4)), t: baseT + rand(-0.2,0.2) }));
+  return {left, right};
+}
+
+/* ===================== LIVE SUPABASE SENSOR DATA =====================
+   Table expected (see supabase-config.js): heel, midfoot, forefoot, toe, temperature, status, created_at
+   (add a patient_id column too if you're tracking more than one physical device).
+   Prefers a Realtime subscription; falls back to polling every second if Realtime isn't available. */
+let sensorRealtimeConnected = false;
+
+async function fetchLatestSensorRow(){
+  if(!supabaseClient) return null;
+  try{
+    const table = (window.supabaseConfig && window.supabaseConfig.sensorTable) || 'sensor_data';
+    const { data, error } = await supabaseClient.from(table).select('*').order('created_at', { ascending:false }).limit(1);
+    if(error) throw error;
+    return (data && data[0]) || null;
+  }catch(e){
+    console.warn('Live sensor fetch failed:', e.message);
+    return null;
+  }
+}
+
+function applySensorRow(row){
+  if(!row) return;
+  const patient = patients.find(p=>p.useLiveSensor);
+  if(!patient) return;
+  patient.liveZones = {
+    heel: row.heel, midfoot: row.midfoot, forefoot: row.forefoot, toe: row.toe,
+    temperature: row.temperature, status: row.status
+  };
+}
+
+function subscribeToLiveSensor(){
+  if(!supabaseClient) return;
+  const table = (window.supabaseConfig && window.supabaseConfig.sensorTable) || 'sensor_data';
+  try{
+    supabaseClient
+      .channel('sensor-data-changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table }, (payload) => {
+        sensorRealtimeConnected = true;
+        applySensorRow(payload.new);
+      })
+      .subscribe((status) => {
+        sensorRealtimeConnected = (status === 'SUBSCRIBED');
+        console.log('Supabase realtime status:', status);
+      });
+  }catch(e){
+    console.warn('Realtime subscription failed, will rely on polling:', e.message);
+  }
+
+  // Polling fallback: only actually used while Realtime isn't connected, so it doesn't double up
+  // once the subscription above is live.
+  setInterval(async ()=>{
+    if(sensorRealtimeConnected) return;
+    const row = await fetchLatestSensorRow();
+    if(row) applySensorRow(row);
+  }, 1000);
+}
+
+function footSvg(vals, sideLabel){
+  const uid = sideLabel.replace(/\s+/g,'') + Math.round(Math.random()*1e6);
+  // Blurred, feathered radial-gradient blobs underneath give the plot real heatmap "concentration" —
+  // a diffuse glow around each pressure point rather than a flat, hard-edged dot — with intensity/size
+  // scaling with load so hot zones visibly bleed into their neighbors, the way real thermal/pressure
+  // sensor arrays render.
+  const glowDefs = vals.map((v,i)=>{
+    const z = ZONE_DEFS[i];
+    const c = zoneColor(v.p, v.t);
+    const gid = `heatGlow_${uid}_${i}`;
+    return `<radialGradient id="${gid}" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="${c}" stop-opacity=""/>
+      <stop offset="55%" stop-color="${c}" stop-opacity=""/>
+      <stop offset="100%" stop-color="${c}" stop-opacity="0"/>
+    </radialGradient>`;
+  }).join('');
+  const glows = vals.map((v,i)=>{
+    const z = ZONE_DEFS[i];
+    const glowR = z.r * (1.7 + v.p/60); // hotter zones spread further, mimicking pressure bleed into surrounding tissue
+    return `<circle cx="${z.cx}" cy="${z.cy}" r="${glowR}" fill="url(#heatGlow_${uid}_${i})" filter="url(#heatBlur_${uid})"/>`;
+  }).join('');
+  const zones = vals.map((v,i)=>{ const z = ZONE_DEFS[i]; const crit = v>=55;
+    return `<ellipse class="zone ${crit?'critical':''}" cx="${z.cx}" cy="${z.cy}" r="${z.r}" fill="${zoneColor(v)}" fill-opacity="0.75" stroke="${zoneColor(v)}" stroke-width="1.5"><title>${z.name}: ${Math.round(v)}% load · ${sideLabel}</title></ellipse>`;
+  }).join('');
+  return `<svg width="130" height="210" viewBox="0 0 100 200">
+    <defs>
+      <filter id="heatBlur_${uid}" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4.2"/></filter>
+      ${glowDefs}
+    </defs>
+    <path d="M50 15 C68 15 74 40 70 65 C66 92 78 110 74 140 C70 170 60 190 50 190 C40 190 30 170 26 140 C22 110 34 92 30 65 C26 40 32 15 50 15 Z" fill="rgba(148,163,184,0.06)" stroke="rgba(148,163,184,0.25)" stroke-width="1.5"/>
+    ${glows}
+    ${zones}
+  </svg>`;
+}
+
+function renderHeatmap(risk, patient, targetId){
+  const wrap = document.getElementById(targetId);
+  if(!wrap) return;
+  const {left, right} = computeHeatmapZones(risk, patient);
+  wrap.innerHTML = `<div><div>${footSvg(left,'Left')}</div><div class="foot-label">Left Foot</div></div>
+    <div><div>${footSvg(right,'Right')}</div><div class="foot-label">Right Foot</div></div>`;
+}
+
+/* ===================== HEATMAP HISTORY (scrub through past readings for the selected patient) ===================== */
+function renderHeatmapHistory(){
+  const wrap = document.getElementById('heatmap-history-wrap');
+  const slider = document.getElementById('heatmap-history-slider');
+  if(!wrap || !slider) return;
+  const patient = patients.find(p=>p.id===selectedId);
+  const hist = patient.heatmapHistory;
+  if(hist.length === 0){
+    wrap.innerHTML = '<p style="color:var(--text-mid); font-size:13px;">Collecting history — check back after a few readings.</p>';
+    slider.max = 0; slider.value = 0;
+    return;
+  }
+  slider.max = hist.length - 1;
+  if(Number(slider.value) > hist.length-1 || slider.dataset.follow !== 'false'){ slider.value = hist.length - 1; }
+  const idx = Number(slider.value);
+  const snap = hist[idx];
+  const catColor = {low:'var(--green)',moderate:'var(--orange)',high:'#F87171',critical:'#DC2626',calibrating:'var(--text-mid)'}[snap.category];
+  wrap.innerHTML = `
+    <div class="heatmap-wrap"><div><div>${footSvg(snap.left,'Left')}</div><div class="foot-label">Left Foot</div></div>
+      <div><div>${footSvg(snap.right,'Right')}</div><div class="foot-label">Right Foot</div></div></div>
+    <div style="text-align:center; font-size:12px; color:var(--text-mid); margin-top:6px;">
+      ${new Date(snap.ts).toLocaleTimeString()} · Pressure ${snap.pressure.toFixed(1)}kPa · Temp ${snap.temp.toFixed(1)}°C ·
+      <span style="color:${catColor}; font-weight:700;">${snap.category.toUpperCase()}</span>
+    </div>`;
+}
+function scrubHeatmapHistory(val){
+  const slider = document.getElementById('heatmap-history-slider');
+  slider.dataset.follow = (Number(val) === Number(slider.max)) ? 'true' : 'false';
+  renderHeatmapHistory();
+}
+
+function alertHtml(a){
+  const color = a.category==='critical' ? '#DC2626' : '#F97316';
+  const timeAgo = Math.max(0, Math.round((Date.now()-a.ts)/1000));
+  return `<div class="alert-item ${a.category==='critical'?'critical':''}">
+    <div class="alert-left"><span class="alert-dot" style="background:${color};"></span>
+      <div><div class="alert-name">${a.name} <span style="color:var(--text-low);font-weight:400;">· ${a.patientId}</span></div>
+      <div class="alert-sub">${a.category.toUpperCase()} risk · Pressure ${a.pressure}kPa · Temp ${a.temp}°C</div></div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="mini-btn" onclick="scheduleFollowUp('${a.patientId}','${a.name}')">Schedule Follow-up</button>
+      <div class="alert-time">${timeAgo}s ago</div>
+    </div>
+  </div>`;
+}
+function renderAlerts(){
+  const empty = '<p style="color:var(--text-mid); font-size:13px;">No alerts yet — monitoring in progress.</p>';
+  document.getElementById('alert-list-dash').innerHTML = alerts.length? alerts.slice(0,5).map(alertHtml).join('') : empty;
+  document.getElementById('alert-list-full').innerHTML = alerts.length? alerts.map(alertHtml).join('') : empty;
+}
+
+function renderMessages(){
+  const list = document.getElementById('messages-list');
+  if(messages.length===0){
+    list.innerHTML = '<p style="color:var(--text-mid); font-size:13px;">No messages sent yet. Patients are notified automatically once when their risk enters Moderate, and once when it enters High/Critical.</p>';
+    return;
+  }
+  list.innerHTML = messages.map(m=>{
+    const icon = m.kind==='urgent' ? '🚨' : '💡';
+    const iconBg = m.kind==='urgent' ? 'rgba(220,38,38,0.15)' : 'rgba(249,115,22,0.15)';
+    const timeAgo = Math.max(0, Math.round((Date.now()-m.ts)/1000));
+    return `<div class="msg-item ${m.kind==='urgent'?'urgent':'advice'}">
+      <div class="msg-icon" style="background:${iconBg};">${icon}</div>
+      <div class="msg-body" style="flex:1;">
+        <div class="msg-top"><span class="msg-name">${m.name} <span style="color:var(--text-low); font-weight:400;">· ${m.patientId}</span></span><span class="msg-channel">${m.channel}</span></div>
+        <div class="msg-text">${m.text}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+          <div><div class="msg-time">${timeAgo}s ago</div><div class="msg-status">✓ ${m.status}</div></div>
+          ${m.kind==='urgent' ? `<button class="mini-btn" onclick="scheduleFollowUp('${m.patientId}','${m.name}')">Schedule Follow-up</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function scheduleFollowUp(patientId, name){
+  appointments.unshift({ patientId, name, ts: Date.now(), type:'Follow-up (auto-scheduled)' });
+  const list = document.getElementById('appt-list');
+  list.innerHTML = appointments.map(a=>`<div class="alert-item"><div class="alert-left">
+    <span class="alert-dot" style="background:var(--blue);"></span>
+    <div><div class="alert-name">${a.name} <span style="color:var(--text-low); font-weight:400;">· ${a.patientId}</span></div>
+    <div class="alert-sub">${a.type}</div></div></div><div class="alert-time">just now</div></div>`).join('');
+  showToast(false, 'Appointment scheduled', `Follow-up created for ${name}.`);
+  switchView('appointments');
+}
+
+/* ===================== ANALYTICS ===================== */
+function renderAnalytics(){
+  const counts = { low:0, moderate:0, high:0, critical:0 };
+  patients.forEach(p => counts[computeRisk(p).category]++);
+  const total = patients.length;
+  const colors = { low:'#22C55E', moderate:'#F97316', high:'#F87171', critical:'#DC2626' };
+  const order = ['low','moderate','high','critical'];
+  let offset = 0;
+  const r = 60, circumference = 2*Math.PI*r;
+  let arcs = '';
+  order.forEach(k=>{
+    const frac = counts[k]/total;
+    if(frac>0){
+      const dash = frac*circumference;
+      arcs += `<circle cx="80" cy="80" r="${r}" fill="none" stroke="${colors[k]}" stroke-width="18"
+        stroke-dasharray="${dash} ${circumference-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 80 80)"/>`;
+      offset += dash;
+    }
+  });
+  document.getElementById('donut-svg').innerHTML = arcs + `<text x="80" y="85" text-anchor="middle" font-size="20" font-weight="700" fill="var(--text-hi)">${total}</text>`;
+  document.getElementById('donut-legend').innerHTML = order.map(k=>
+    `<span><i style="background:${colors[k]};"></i>${k[0].toUpperCase()+k.slice(1)} — ${counts[k]}</span>`).join('');
+
+  function barsHtml(field, unit, maxScale){
+    return patients.map(p=>{
+      const latest = p.history[p.history.length-1] || p.baseline;
+      const val = latest[field];
+      const pct = Math.min(100, (val/maxScale)*100);
+      const risk = computeRisk(p);
+      const color = {low:'#22C55E',moderate:'#F97316',high:'#F87171',critical:'#DC2626'}[risk.category];
+      return `<div class="bar-row"><div class="bar-lbl">${p.name.split(' ')[0]}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:${color};"></div></div>
+        <div class="bar-val">${val.toFixed(1)}${unit}</div></div>`;
+    }).join('');
+  }
+  document.getElementById('pressure-bars').innerHTML = barsHtml('pressure','kPa',60);
+  document.getElementById('temp-bars').innerHTML = barsHtml('temp','°C',38);
+
+  const stableRate = Math.round((counts.low/total)*100);
+  document.getElementById('an-stable').textContent = stableRate+'%';
+  const avgConf = Math.round(patients.reduce((s,p)=>s+computeRisk(p).confidence,0)/total);
+  document.getElementById('an-avgconf').textContent = avgConf+'%';
+  document.getElementById('an-msgs').textContent = messages.length;
+}
+
+/* ===================== REPORTS ===================== */
+function populateReportSelect(){
+  const sel = document.getElementById('report-patient-select');
+  sel.innerHTML = patients.map(p=>`<option value="${p.id}">${p.name} — ${p.id}</option>`).join('');
+}
+function generateReport(){
+  const id = document.getElementById('report-patient-select').value;
+  const patient = patients.find(p=>p.id===id);
+  const risk = computeRisk(patient);
+  const latest = patient.history[patient.history.length-1];
+  const out = document.getElementById('report-output');
+  const report =
+`APOLLO DIABETES CARE CENTER
+Diabetic Foot Risk Report
+Generated: ${new Date().toLocaleString()}
+
+PATIENT: ${patient.name} (${patient.id})
+Age/Gender: ${patient.age} / ${patient.gender}   Ward: ${patient.ward}
+
+CURRENT READINGS
+Pressure: ${latest.pressure.toFixed(1)} kPa (baseline ${patient.baseline.pressure} kPa)
+Temperature: ${latest.temp.toFixed(1)} °C (baseline ${patient.baseline.temp} °C)
+
+
+RISK ASSESSMENT
+Score: ${risk.score}% — ${risk.label}
+Confidence: ${risk.confidence}%
+Trend: ${risk.trendLabel}
+
+CLINICAL NOTE
+${risk.category==='critical' ? 'Immediate offloading and clinical inspection recommended within 2 hours.' :
+  risk.category==='high' ? 'Clinical review recommended within 24 hours. Reinforce offloading footwear use.' :
+  'Continue routine monitoring. No immediate intervention required.'}
+
+Attending: Dr. Arjun
+This report was generated with AI assistance and should be reviewed by a clinician.`;
+  out.textContent = report;
+  document.getElementById('print-btn').style.display = 'inline-block';
+}
+
+/* ===================== AI CLINICAL ASSISTANT ===================== */
+async function generateSummary(){
+  const patient = patients.find(p=>p.id===selectedId);
+  const risk = computeRisk(patient);
+  const latest = patient.history[patient.history.length-1];
+  const btn = document.getElementById('ai-btn');
+  const out = document.getElementById('ai-output');
+  btn.textContent = '⏳ Generating...'; btn.disabled = true;
+  const summary =
+`CLINICAL SUMMARY — ${patient.name} (${patient.id})
+
+Risk Level: ${risk.label} (${risk.score}%, ${risk.confidence}% confidence)
+
+Findings: Plantar pressure is elevated ${risk.pressureDelta.toFixed(1)}kPa above this patient's baseline, accompanied by a ${risk.tempDelta.toFixed(1)}°C localized temperature rise — a recognized precursor pattern for diabetic foot ulceration when sustained.
+
+Likely Cause: Prolonged unilateral loading, consistent with reduced offloading during ambulation or extended standing.
+
+Recommended Action: ${risk.category==='critical' ? 'Immediate offloading and clinical inspection within 2 hours. Consider temporary non-weight-bearing status.' : risk.category==='high' ? 'Schedule foot inspection within 24 hours. Reinforce offloading footwear use.' : 'Continue routine monitoring. No immediate intervention required.'}
+
+Generated by AI Clinical Assistant · Not a substitute for clinical judgment.`;
+  out.innerHTML = '<span class="cursor"></span>';
+  let i = 0;
+  const interval = setInterval(()=>{
+    i += 3;
+    out.innerHTML = summary.slice(0,i).replace(/\n/g,'<br>') + '<span class="cursor"></span>';
+    if(i >= summary.length){ clearInterval(interval); out.innerHTML = summary.replace(/\n/g,'<br>'); btn.textContent = '⚡ Generate AI Summary'; btn.disabled = false; }
+  }, 12);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diab-Aid | AI-Powered Diabetic Foot Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <span>Diab-Aid</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#technology">Technology</a></li>
+        <li><a href="#solutions">Solutions</a></li>
+        <li><a href="patient-dashboard.html">Dashboard</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-buttons">
+        <a href="patient-dashboard.html" class="btn btn-secondary">Login</a>
+        <a href="patient-dashboard.html" class="btn btn-primary">Get Started</a>
+      </div>
+      <button class="mobile-menu-btn" id="mobile-menu-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="particle-net"></div>
+      <div class="glow-orb orb-1"></div>
+      <div class="glow-orb orb-2"></div>
+    </div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">AI FOOT HEALTH PLATFORM</div>
+        <h1 class="hero-title">Predict problems before your <span>feet</span> feel them.</h1>
+        <p class="hero-subtitle">Diab-Aid pairs smart insoles with AI models that detect pressure hotspots, temperature spikes, and gait anomalies — then alerts you and your doctor in time to prevent ulcers.</p>
+        <div class="hero-cta">
+          <a href="patient-dashboard.html" class="btn btn-primary btn-large">Get Started</a>
+          <button class="btn btn-secondary btn-large btn-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Watch Demo
+          </button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="glass-panel dashboard-preview-hero">
+          <div class="preview-header">
+            <span>Live Foot Map</span>
+            <span class="status-streaming"><span class="pulse"></span> Streaming</span>
+          </div>
+          <div class="foot-heatmap-container" style="display:flex; justify-content:center; position:relative;">
+            <img src="thermal_foot_heatmap.png" alt="Thermal foot imaging" style="max-width: 100%; border-radius: 12px; filter: contrast(1.2) brightness(1.1); object-fit: contain;">
+            <div class="scanner-line"></div>
+          </div>
+          <div class="preview-stats">
+            <div class="stat-box">
+              <span class="stat-label">PRESSURE</span>
+              <span class="stat-val safe">Low</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">TEMP Δ</span>
+              <span class="stat-val warning">0.6°C</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">RISK</span>
+              <span class="stat-val safe">Stable</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics -->
+  <section class="statistics">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h2 class="counter">537M+</h2>
+          <p>People Living with Diabetes</p>
+        </div>
+        <div class="stat-item">
+          <h2 class="counter">85%</h2>
+          <p>Complications Preventable</p>
+        </div>
+        <div class="stat-item">
+          <h2 class="counter">24/7</h2>
+          <p>Continuous Monitoring</p>
+        </div>
+        <div class="stat-item">
+          <h2 class="counter">95%</h2>
+          <p>Prediction Accuracy</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem-section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <h2>The Challenge</h2>
+        <p>Diabetic foot ulcers are a leading cause of hospitalizations, but they don't happen overnight. Current methods rely on manual, infrequent checks, missing the critical window for prevention.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="glass-card">
+          <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+          <h3>Late Detection</h3>
+          <p>Ulcers often go unnoticed until it's too late due to neuropathy and loss of sensation.</p>
+        </div>
+        <div class="glass-card">
+          <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+          <h3>Hospital Dependency</h3>
+          <p>Frequent clinic visits are required, placing a heavy burden on patients and healthcare systems.</p>
+        </div>
+        <div class="glass-card">
+          <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l3-9 5 18 3-9h5"></path></svg></div>
+          <h3>Manual Monitoring</h3>
+          <p>Subjective daily self-checks are unreliable and often forgotten by patients.</p>
+        </div>
+        <div class="glass-card highlight-card">
+          <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+          <h3>Risk of Amputation</h3>
+          <p>Every 20 seconds, a lower limb is lost to diabetes globally. It's time for a change.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution -->
+  <section class="solution-section" id="solutions">
+    <div class="container">
+      <div class="section-header">
+        <h2>Introducing Diab-Aid</h2>
+        <p>A comprehensive ecosystem combining wearable IoT, cloud architecture, and predictive AI.</p>
+      </div>
+      <div class="hex-grid">
+        <div class="hex-card glass-card">
+          <h3>Smart Wearable</h3>
+          <p>Discreet smart insoles packed with pressure, temperature, and humidity sensors.</p>
+        </div>
+        <div class="hex-card glass-card">
+          <h3>AI Prediction</h3>
+          <p>Machine learning models trained to detect early signs of ulceration.</p>
+        </div>
+        <div class="hex-card glass-card">
+          <h3>Cloud Platform</h3>
+          <p>Secure, real-time data sync powered by scalable cloud architecture.</p>
+        </div>
+        <div class="hex-card glass-card">
+          <h3>Doctor Collaboration</h3>
+          <p>Direct integration with clinical dashboards for immediate intervention.</p>
+        </div>
+        <div class="hex-card glass-card">
+          <h3>Remote Monitoring</h3>
+          <p>Continuous protection without the need for hospital visits.</p>
+        </div>
+        <div class="hex-card glass-card">
+          <h3>Personalized Insights</h3>
+          <p>Tailored daily recommendations based on your unique gait and habits.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Seamless protection in every step.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <h4>Wear Smart Shoe</h4>
+            <p>Simply wear your shoes equipped with Diab-Aid smart insoles as usual.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <h4>Collect Sensor Data</h4>
+            <p>Sensors continuously gather pressure mapping, temperature, and humidity data.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <h4>Cloud Processing</h4>
+            <p>Data is securely transmitted to our HIPAA-compliant cloud servers in real-time.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <h4>AI Risk Analysis</h4>
+            <p>Advanced algorithms analyze data for micro-anomalies indicating tissue stress.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <h4>Alert Notifications</h4>
+            <p>If risk is detected, instant alerts are sent to both the patient and their care team.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot glow-dot"></div>
+          <div class="timeline-content glass-card border-glow">
+            <h4>Early Prevention</h4>
+            <p>Timely intervention prevents ulcers, keeping feet healthy and patients mobile.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Platform Features</h2>
+        <p>Everything you need for comprehensive foot care management.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feat-card glass-card">Real-Time Monitoring</div>
+        <div class="feat-card glass-card">Pressure Analysis</div>
+        <div class="feat-card glass-card">Temperature Monitoring</div>
+        <div class="feat-card glass-card">Humidity Tracking</div>
+        <div class="feat-card feat-highlight">AI Risk Prediction</div>
+        <div class="feat-card glass-card">Foot Heatmaps</div>
+        <div class="feat-card glass-card">Cloud Sync</div>
+        <div class="feat-card glass-card">Emergency Alerts</div>
+        <div class="feat-card glass-card">Doctor Dashboard</div>
+        <div class="feat-card glass-card">Personalized Reports</div>
+        <div class="feat-card glass-card">Appointments</div>
+        <div class="feat-card glass-card">Smart Notifications</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Smart Technology -->
+  <section class="smart-tech" id="technology">
+    <div class="container">
+      <div class="section-header">
+        <h2>Smart Technology Stack</h2>
+        <p>End-to-end architecture built for reliability and scale.</p>
+      </div>
+      <div class="horizontal-flow-wrapper">
+        <div class="horizontal-flow">
+          <div class="flow-node glass-card">Sensors</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node glass-card">ESP32</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node flow-glow">Supabase Cloud</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node flow-highlight">AI Engine</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node glass-card">Dashboard</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node glass-card">Doctor Review</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Modules / Personalized Experience -->
+  <section class="personalized">
+    <div class="container">
+      <div class="section-header">
+        <h2>A Personalized Experience</h2>
+        <p>Tailored interfaces for every stakeholder in the care journey.</p>
+      </div>
+      <div class="persona-grid">
+        <a href="patient-dashboard.html#patient" class="persona-card glass-card" style="text-decoration:none; color:inherit; display:block; cursor:pointer;">
+          <div class="persona-icon">👤</div>
+          <h3>Patient</h3>
+          <ul>
+            <li>Daily Health Score</li>
+            <li>AI Recommendations</li>
+            <li>Progress Reports</li>
+            <li>Medicine Reminders</li>
+          </ul>
+        </a>
+        <a href="footguard-dashboard.html" class="persona-card glass-card active-persona" style="text-decoration:none; color:inherit; display:block; cursor:pointer;">
+          <div class="persona-icon">👨‍⚕️</div>
+          <h3>Doctor</h3>
+          <ul>
+            <li>Live Fleet Monitoring</li>
+            <li>Patient Management</li>
+            <li>AI Risk Review</li>
+            <li>Direct Communication</li>
+          </ul>
+        </a>
+        <a href="admin-dashboard.html" class="persona-card glass-card" style="text-decoration:none; color:inherit; display:block; cursor:pointer;">
+          <div class="persona-icon">🛡️</div>
+          <h3>Administrator</h3>
+          <ul>
+            <li>User Management</li>
+            <li>Device Provisioning</li>
+            <li>Hospitals</li>
+            <li>System Analytics</li>
+          </ul>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Preview -->
+  <section class="dashboard-preview-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Powerful Analytics Dashboard</h2>
+        <p>Visualize health data with clarity and precision.</p>
+      </div>
+      <div class="dashboard-mockup glass-card">
+        <div class="mockup-sidebar"></div>
+        <div class="mockup-main">
+          <div class="mockup-header"></div>
+          <div class="mockup-grid">
+            <div class="mockup-card large">
+               <h4>Health Score & Risk</h4>
+               <div class="mockup-chart"></div>
+            </div>
+            <div class="mockup-card">
+              <h4>Pressure Heatmap</h4>
+              <div class="mockup-mini-heatmap"></div>
+            </div>
+            <div class="mockup-card">
+              <h4>Shoe Status</h4>
+              <div class="mockup-battery">87%</div>
+            </div>
+            <div class="mockup-card full">
+              <h4>Recent Alerts & AI Summary</h4>
+              <div class="mockup-list">
+                <div class="mockup-list-item"></div>
+                <div class="mockup-list-item"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <div class="container">
+      <div class="section-header">
+        <h2>Frequently Asked Questions</h2>
+      </div>
+      <div class="accordion">
+        <div class="accordion-item glass-card">
+          <div class="accordion-header">
+            How does Diab-Aid predict ulcers?
+            <span class="acc-icon">+</span>
+          </div>
+          <div class="accordion-content">Our AI models analyze continuous pressure, temperature, and humidity data to identify micro-traumas and inflammation patterns weeks before a physical ulcer forms.</div>
+        </div>
+        <div class="accordion-item glass-card">
+          <div class="accordion-header">
+            Is my medical data secure?
+            <span class="acc-icon">+</span>
+          </div>
+          <div class="accordion-content">Yes, Diab-Aid uses Supabase Cloud with end-to-end encryption, ensuring full compliance with HIPAA and global data privacy standards.</div>
+        </div>
+        <div class="accordion-item glass-card">
+          <div class="accordion-header">
+            Do I need to charge the Smart Shoe?
+            <span class="acc-icon">+</span>
+          </div>
+          <div class="accordion-content">Yes, the smart insoles have a long-lasting battery that typically requires wireless charging once a week, depending on usage.</div>
+        </div>
+        <div class="accordion-item glass-card">
+          <div class="accordion-header">
+            Can my current doctor access the data?
+            <span class="acc-icon">+</span>
+          </div>
+          <div class="accordion-content">Absolutely. You can invite your podiatrist or primary care physician to the Doctor Workspace to securely review your real-time data.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action & Contact -->
+  <section class="cta" id="contact">
+    <div class="cta-glow"></div>
+    <div class="container relative">
+      <div class="cta-content glass-card">
+        <h2>Start Protecting Every Step Today</h2>
+        <p>Join the future of preventive diabetic care.</p>
+        <div class="cta-buttons">
+          <a href="patient-dashboard.html" class="btn btn-primary btn-large">Register</a>
+          <a href="patient-dashboard.html" class="btn btn-secondary btn-large">Get Started</a>
+        </div>
+        
+        <div class="contact-form-container">
+          <div class="form-grid">
+            <div class="form-info">
+              <h3>Talk to our care team</h3>
+              <p>Questions about deployment, devices, or clinical integration? We're here to help.</p>
+              <ul class="contact-details">
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                  support@diab-aid.health
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                  +1 (555) 010-0110
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  Mon–Fri, 8am–8pm
+                </li>
+              </ul>
+            </div>
+            <form class="contact-form" id="contactForm">
+              <div class="input-group">
+                <input type="text" placeholder="Your name" required>
+              </div>
+              <div class="input-group">
+                <input type="email" placeholder="Email" required>
+              </div>
+              <div class="input-group">
+                <textarea placeholder="How can we help?" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary form-submit">Send message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <div class="logo-icon"></div>
+            <span>Diab-Aid</span>
+          </div>
+          <p>AI-Powered Personalized Diabetic Foot Monitoring Platform</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#technology">Technology</a></li>
+            <li><a href="patient-dashboard.html">Dashboard</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Social</h4>
+          <ul>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Diab-Aid. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
